@@ -26,12 +26,15 @@ python RadialProfile.py -i ./Desktop/rpExample.lif -o ./Desktop/rpResults -c nuc
 Upon successfully running the program, a Napari Viewer with the first scene contained in the .LIF file should appear.
 
 The general workflow is as follows:
+
 1. Navigate to the desired Z-Plane
+
 2. User whatever channel is needed to:
 	A) Draw an ROI Using the shapes layer named "ROIs" which can be found on the left. The polygon selection function will be the most accurate.
 	B) Draw a Center Point using the points layer named "Centers" which can be found on the left. Place this where you want the center of the Radial Profile circle to be.
 	   Note that this center point does not need to be placed in the center of the ROI defined.
 	###### IMPORTANT: ROI
+
 3.Repeat step 2 for all desired ROI's.  
 
 
