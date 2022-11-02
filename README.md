@@ -2,6 +2,17 @@
 
 Radial Profiling of User-Defined ROIs Using Napari
 
+## Dependencies:
+The following packages must be installed to use the script:
+- apari
+- numpy
+- aicsimageio
+- matplotlib
+- pathlib
+- tifffile
+- os
+- argparse
+
 ## Usage:
 
 Currently this script is run through the command line and must have several arguments provided to it. The script was designed around reading in a .LIF file containing 1
