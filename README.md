@@ -55,12 +55,7 @@ The organization is as follows:
 RadialProfiles -> Folder For Each Sample -> Folder For Each ROI Within Sample
 
 Each ROI folder contains:
-	*ROI_n.tiff -> Cropped ROI region saved in a .tiff file.
-	*RadialPlot.png -> A basic plot of the radial profile.
-	*radial.csv -> The resulting data from the radial profile analysis. (Read into numpy with np.loadtxt() function).
-	*center.csv -> File containing the ROI's specified center point, adjusted to the coordinates of the cropped ROI image (ROI_n.tff).
-
-
-
-
-## Output:
+- ROI_n.tiff -> Cropped ROI region saved in a .tiff file.
+- RadialPlot.png -> A basic plot of the radial profile.
+- radial.csv -> The resulting data from the radial profile analysis. (Read into numpy with np.loadtxt() function).
+- center.csv -> File containing the ROI's specified center point, adjusted to the coordinates of the cropped ROI image (ROI_n.tff).
