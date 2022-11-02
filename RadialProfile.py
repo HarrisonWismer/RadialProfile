@@ -1,5 +1,4 @@
 import napari
-from magicgui import magicgui
 import numpy as np
 from aicsimageio import AICSImage
 import matplotlib.pyplot as plt
