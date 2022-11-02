@@ -36,9 +36,7 @@ The general workflow is as follows:
 	B) Draw a Center Point using the points layer named "Centers" which can be found on the left. Place this where you want the center of the Radial Profile circle to be.
 	   Note that this center point does not need to be placed in the center of the ROI defined.
 
-	### IMPORTANT: ROI's and Center Points must be created in the same order to be associated with each other. That means you should probably draw 1 ROI and then immediately
-	place its center point. Less feasible but still OK would be to draw all ROIs and then place all center points in the SAME ORDER the ROIs were added. What you CANNOT
-	do is to create ROI_1, create ROI_2, place ROI_2's center point and then place ROI_1's center point. This will associate ROI_2 with ROI_1's center point and vice versa.
+	### IMPORTANT: ROI's and Center Points must be created in the same order to be associated with each other. That means you should probably draw 1 ROI and then immediately place its center point. Less feasible but still OK would be to draw all ROIs and then place all center points in the SAME ORDER the ROIs were added. What you CANNOT do is to create ROI_1, create ROI_2, place ROI_2's center point and then place ROI_1's center point. This will associate ROI_2 with ROI_1's center point and vice versa.
 
 3. Repeat step 2 for all desired ROI's.
 
