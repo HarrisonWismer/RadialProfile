@@ -11,7 +11,6 @@ The following packages must be installed to use the script:
 - matplotlib
 - pathlib
 - tifffile
-- os
 - argparse
 
 ## Usage:
