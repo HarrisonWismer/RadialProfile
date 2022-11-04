@@ -3,7 +3,13 @@
 Radial Profiling of User-Defined ROIs Using Napari
 
 ## Dependencies:
-The following packages must be installed to use the script:
+There is a provided Conda Environment file camed rpEnv.yml that can be used to create a Conda environment with all dependencies already installed.
+
+To create the environment open the conda command prompt and enter the following command to create an environment named napariEnv:
+
+conda env create --file rpEnv.yml
+
+If performing a manual installation of necessary packages, the following packages must be installed to use the script:
 - napari
 - numpy
 - aicsimageio
