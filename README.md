@@ -25,8 +25,7 @@ This will bring up the GUI through which all necessary interaction with the prog
 2. Specify an output directory.
 3. Use the mouse to select which samples will be run through the program.
 4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
-5. Toggle the "Ignore Zeros" option to whichever setting is desired.
-6. Click Run
+5. Click Run
 
 ## Interaction:
 Upon successfully running the program through the GUI, a Napari Viewer with the first scene contained in the .LIF file should appear.
