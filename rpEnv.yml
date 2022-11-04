@@ -1,0 +1,13 @@
+name: napariEnv
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - aicsimageio=4.9.2
+  - readlif=0.6.5
+  - pyqt=5.9.2
+  - napari=0.4.14
+  - matplotlib=3.5.3
+  - pathlib=1.0.1
+  - numpy=1.23.2
