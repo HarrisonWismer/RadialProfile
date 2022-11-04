@@ -4,9 +4,10 @@ Radial Profiling of User-Defined ROIs Using Napari
 
 ## Dependencies:
 The following packages must be installed to use the script:
-- apari
+- napari
 - numpy
 - aicsimageio
+- readlif
 - matplotlib
 - pathlib
 - tifffile
@@ -14,27 +15,21 @@ The following packages must be installed to use the script:
 - argparse
 
 ## Usage:
+To run the program, simply run the RunRadialProfile.py file.
 
-Currently this script is run through the command line and must have several arguments provided to it. The script was designed around reading in a .LIF file containing 1
-or more scenes which can each be a Z-Stack.
+Ex: >$ python RunRadialProfile.py
 
-Arguments that must be provided are:
+This will bring up the GUI through which all necessary interaction with the program can be done Once in the GUI complete each step in the orders shown.
 
--i (--input) -> The Input File Path
-
--o (--output) -> The Output File Path (Optional. If no path specified by user, the program will write all files to the current working directory.)
-
--c (--channels) -> The channel names. The user should know before hand the number of channels and the order of channels.
-
--s (--specifiedChannel) -> The channel used to measure intensity values as part of the Radial Profiling procedure. 
-Specified channels must be one of the channels specified by the user.
-
-An example program call is:
-
-python RadialProfile.py -i ./Desktop/rpExample.lif -o ./Desktop/rpResults -c nucleus membrane mitochondria -s mitochondria
+1. Specify an input file.
+2. Specify an output directory.
+3. Use the mouse to select which samples will be run through the program.
+4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
+5. Toggle the "Ignore Zeros" option to whichever setting is desired.
+6. Click Run
 
 ## Interaction:
-Upon successfully running the program, a Napari Viewer with the first scene contained in the .LIF file should appear.
+Upon successfully running the program through the GUI, a Napari Viewer with the first scene contained in the .LIF file should appear.
 
 The general workflow is as follows:
 
