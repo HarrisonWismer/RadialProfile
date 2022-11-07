@@ -7,7 +7,9 @@ There is a provided Conda Environment file camed rpEnv.yml that can be used to c
 
 To create the environment open the conda command prompt and enter the following command to create an environment named napariEnv:
 
-conda env create --file rpEnv.yml
+conda env create -f rpEnv.yml
+
+This will create a new Conda environment named napariEnv with all dependencies installed.
 
 If performing a manual installation of necessary packages, the following packages must be installed to use the script:
 - napari
