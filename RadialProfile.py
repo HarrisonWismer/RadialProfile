@@ -210,31 +210,35 @@ class RadialProfiler:
 
         outputPath = Path(outputPath)
 
+        # Go back over all of the scenes from the current run of the program and run the analysis protocol.
         for scene in self.scenes:
 
             scenePath = outputPath / Path(scene)
-
+            
+            # Each ROI in the scene
             for roi in scenePath.iterdir():
-
+                
+                # Read in the previously generated Radial Profile
                 radialProfY = np.loadtxt(roi / Path("radial.csv"))
+                # Normalize X values between 0 and 1
                 normalizedX = np.arange(len(radialProfY)) / (len(radialProfY)-1)
 
+                # Save the plot of the normalized data
                 plt.plot(normalizedX,radialProfY)
                 plt.savefig(roi / Path("RadialPlotNorm.png"))
                 plt.close()
 
-                
+                # Create array of cumulative intensities and look for the X that contains the fractional intensity.
                 cumulIntensity = np.cumsum(radialProfY)
+                # np.argmax will return the index of the first value that exceed the fractional intensity desired.
                 fracMinIndex = np.argmax(cumulIntensity >= (np.sum(radialProfY) * fraction))
+                # Index into normalized values to get minimum radius holding fraction f of the intensity.
                 xFractionalMin = normalizedX[fracMinIndex]
 
-                
+                # Save the information in a file of the format
+
                 radPath = roi / Path("FractionalRadius.csv")
                 # Save in format: fraction,radius
                 with open(radPath, "w") as f:
-                    f.write("Fraction Specified: " + str(fraction) + "\n")
-                    f.write("Minimum Radius Containing Fraction f of total intensity: " + str(xFractionalMin) + "\n")
-                
-
-
-
+                    f.write("Fraction Specified,Minimum Radius" + "\n")
+                    f.write(str(fraction) + "," + str(xFractionalMin) + "\n")
