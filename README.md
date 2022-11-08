@@ -59,8 +59,6 @@ The general workflow is as follows:
 is not the same as the number of center points placed. In this case it may be easier to delete all ROIs and points to make sure that each ROI is correctly associated with each point.
 If the number of ROIs matches the number of center points, a new viewer displaying the next scene will pop up. Repeat steps 1-3 for each scene until no new Viewer pops up.
 
-Note: If you just want to analyze 1 scene you can keep closing out of undesired scenes without defining and ROIs or center points (this will NOT overwrite any previous analysis on these scenes).
-
 ## Output:
 
 Once the steps above are complete there should be a new folder called RadialProfiles present at the specified output path.

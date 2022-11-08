@@ -190,3 +190,59 @@ class RadialProfiler:
                 plt.plot(rad)
                 plt.savefig(roiPath / Path("RadialPlot.png"))
                 plt.close()
+        
+        self.analyzeProfiles(outputPath,.75)
+        
+
+    def analyzeProfiles(self,outputPath, fraction):
+        """
+        Implement the analysis protocol implemented utilized in:
+            Article Source: Reversible association with motor proteins (RAMP): A streptavidin-based method to manipulate organelle positioning
+            Guardia CM, De Pace R, Sen A, Saric A, Jarnik M, et al. (2019) Reversible association with motor proteins (RAMP): A streptavidin-based 
+            method to manipulate organelle positioning. PLOS Biology 17(5): e3000279. 
+            https://doi.org/10.1371/journal.pbio.3000279 
+
+            1) Normalizes radius values (X-Values) between 0 and 1
+            2) Finds the minimum distance that contains x (fraction specified by the user) of the total intesity
+            3) Saves the radius within the ROI folder
+            4) Calculates the average radius holding x of the total intensity for the entire sample.
+        """
+
+        outputPath = Path(outputPath)
+
+        for scene in self.scenes:
+
+            scenePath = outputPath / Path(scene)
+
+            for roi in scenePath.iterdir():
+
+                radialProfY = np.loadtxt(roi / Path("radial.csv"))
+                normalizedX = np.arange(len(radialProfY)) / (len(radialProfY)-1)
+
+                plt.plot(normalizedX,radialProfY)
+                plt.savefig(roi / Path("RadialPlotNorm.png"))
+                print(roi / Path("RadialPlotNorm.png"))
+                plt.close()
+
+                ySum = 0
+                xFractionalMin = None
+                for index, yIntensity in enumerate(radialProfY):
+                    print(index, yIntensity)
+                    ySum += yIntensity
+                    
+                    if ySum > np.sum(radialProfY) * fraction:
+                        print("HERE")
+                        xFractionalMin = normalizedX[index]
+                        break
+                    else:
+                        continue
+                
+                radPath = roi / Path("FractionalRadius.csv")
+                # Save in format: fraction,radius
+                with open(radPath, "w") as f:
+                    f.write(str(fraction) + "," + str(xFractionalMin))
+                    f.write("\n")
+                
+
+
+
