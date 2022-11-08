@@ -225,7 +225,8 @@ class RadialProfiler:
 
                 
                 cumulIntensity = np.cumsum(radialProfY)
-                xFractionalMin = np.argmax(cumulIntensity >= (np.sum(radialProfY) * fraction))
+                fracMinIndex = np.argmax(cumulIntensity >= (np.sum(radialProfY) * fraction))
+                xFractionalMin = normalizedX[fracMinIndex]
 
                 
                 radPath = roi / Path("FractionalRadius.csv")
