@@ -149,6 +149,8 @@ class RadialProfiler:
             # Create the folder within the current working directory to save all of the ROI information.
             scenePath = outputPath / scene
             self.checkPath(scenePath)
+            with open(scenePath / Path(scene + "_table.csv"), "a") as f:
+                f.write("CenterX,CenterY,RadialPath,RadialPlotPath,RoiTiffPath" + "\n")
             
             for index in range(len(view.layers["Centers"].data)):
 
@@ -183,7 +185,7 @@ class RadialProfiler:
                 newX, newY = int(oldX - xmin), int(oldY-ymin)
 
                 # Save the center point information into a CSV.
-                csvPath = roiPath / Path("center.csv")
+                csvPath = roiPath / Path("Center.csv")
                 with open(csvPath, 'w') as f:
                     f.write(str(newX) + "," + str(newY))
 
@@ -191,13 +193,22 @@ class RadialProfiler:
                 rad = self.radial_profile(cropped, (newY,newX))
 
                 # Save the Radial Profile Data into a csv
-                radPath = roiPath / Path("radial.txt")
+                radPath = roiPath / Path("Radial.csv")
                 with open(radPath, "w") as f:
-                    for index,intensity in enumerate(rad):
-                        f.write(str(intensity))
-                        f.write("\n")
+                    for ind,intensity in enumerate(rad):
+                        f.write(str(ind) + "," + str(intensity) + "\n")
 
-                self.simplePlot(np.arange(len(rad)),rad, roiPath / Path("RadialPlot.png"))
+                plotPath = roiPath / Path("RadialPlot.png")
+                self.simplePlot(np.arange(len(rad)), rad, plotPath)
+
+                with open(scenePath / Path(scene + "_table.csv"), "a") as f:
+                    f.write("{},{},{},{},{},{}\n".format("ROI_" + str(index), 
+                                                        str(newX),
+                                                        str(newY),
+                                                        str(radPath),
+                                                        str(plotPath),
+                                                        str(imgPath)))
+
 
     def analyzeProfiles(self,outputPath, fraction):
         """
@@ -224,30 +235,42 @@ class RadialProfiler:
             
             # Each ROI in the scene
             for roi in scenePath.iterdir():
+                if roi.is_dir():
                 
-                # Read in the previously generated Radial Profile
-                radialProfY = np.loadtxt(roi / Path("radial.txt"))
-                # Normalize X values between 0 and 1
-                normalizedX = np.arange(len(radialProfY)) / (len(radialProfY)-1)
+                    # Read in the previously generated Radial Profile
+                    radialProfile = np.loadtxt(roi / Path("Radial.csv"),delimiter=",")
 
-                # Save the plot of the normalized data
-                self.simplePlot(normalizedX, radialProfY, roi / Path("RadialPlotNormalized.png"))
+                    yValues = radialProfile[:,1]
+                    xValues = radialProfile[:,0]
 
-                # Create array of cumulative intensities and look for the X that contains the fractional intensity.
-                cumulIntensity = np.cumsum(radialProfY)
-                # np.argmax will return the index of the first value that exceed the fractional intensity desired.
-                fracMinIndex = np.argmax(cumulIntensity >= (np.sum(radialProfY) * fraction))
-                # Index into normalized values to get minimum radius holding fraction f of the intensity.
-                xFractionalMin = normalizedX[fracMinIndex]
-                minRads.append(xFractionalMin)
+                    # Normalize X values between 0 and 1
+                    normalizedX = xValues / np.max(xValues)
 
-                # Save the information in a file of the format
+                    with open(roi / Path("RadialNormalized.csv"), "w") as f:
+                        for x,y in zip(normalizedX, yValues):
+                            f.write(str(x) + "," + str(y) + "\n")
 
-                radPath = roi / Path("FractionalRadius.csv")
-                # Save in format: fraction,radius
-                with open(radPath, "w") as f:
-                    f.write("Fraction Specified,Minimum Radius" + "\n")
-                    f.write(str(fraction) + "," + str(xFractionalMin) + "\n")
+                    # Save the plot of the normalized data
+                    self.simplePlot(normalizedX, yValues, roi / Path("RadialPlotNormalized.png"))
+
+                    # Create array of cumulative intensities and look for the X that contains the fractional intensity.
+                    cumulIntensity = np.cumsum(yValues)
+                    # np.argmax will return the index of the first value that exceed the fractional intensity desired.
+                    fracMinIndex = np.argmax(cumulIntensity >= (np.sum(yValues) * fraction))
+                    # Index into normalized values to get minimum radius holding fraction f of the intensity.
+                    xFractionalMin = normalizedX[fracMinIndex]
+                    minRads.append(xFractionalMin)
+
+                    # Save the information in a file of the format
+
+                    radPath = roi / Path("FractionalRadius.csv")
+                    # Save in format: fraction,radius
+                    with open(radPath, "w") as f:
+                        f.write("Fraction Specified,Minimum Radius" + "\n")
+                        f.write(str(fraction) + "," + str(xFractionalMin) + "\n")
+                
+                else:
+                    continue
 
             minRads = np.array(minRads)
             minMean = np.mean(minRads)

@@ -72,3 +72,10 @@ Each ROI folder contains:
 - RadialPlot.png -> A basic plot of the radial profile.
 - radial.csv -> The resulting data from the radial profile analysis. (Read into numpy with np.loadtxt() function).
 - center.csv -> File containing the ROI's specified center point, adjusted to the coordinates of the cropped ROI image (ROI_n.tff).
+
+## Optional Analysis:
+
+Currently there is only 1 downstream analysis procedure implemented, though it wouldn't be exceptionally difficuly to expand in the future. Currently, a variation of the RAMP protocol as described in [Guardia et al. 2019](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000279#sec002) is implemented with the following steps:
+
+1. Given the Radial Profile plot distribution calculated for each ROI, normalize the distances (X-Values) using the largest circle present. This effectively normalizes all distance values to be between 0 and 1. The normalized values
+2. Define a fraction f (0 < f <= 1) of the total intensity from which to calculate the minimum radius size which incorporates the fraction f of the total intensity.

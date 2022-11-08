@@ -101,19 +101,13 @@ class MainWindow(QMainWindow):
         message if one of the steps has been missed.
         """
 
-        attributes = [self.image, self.scenes,self.channels,self.selectedChannel]
-        messages = ["Image Not Loaded In", "Scenes Not Selected", "Channels Not Loaded", "Channels Not Selected"]
+        #attributes = [self.image, self.scenes,self.channels,self.selectedChannel]
+        #messages = ["Image Not Loaded In", "Scenes Not Selected", "Channels Not Loaded", "Channels Not Selected"]
 
-        try:
-            self.rp = rp.RadialProfiler(self.image, self.scenes, self.channels, self.selectedChannel)
-            self.rp.executeScript(Path(self.outputLine.text())) # Run the Analysis
-            if self.analysisButton.isChecked():
-                self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
-
-        except:
-            for attr,mes in zip(attributes,messages):
-                if attr == None:
-                    print(mes)
+        self.rp = rp.RadialProfiler(self.image, self.scenes, self.channels, self.selectedChannel)
+        self.rp.executeScript(Path(self.outputLine.text())) # Run the Analysis
+        if self.analysisButton.isChecked():
+            self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
 
     def setFraction(self):
         self.fraction = self.fractionIntensity.value()
