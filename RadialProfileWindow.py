@@ -28,6 +28,8 @@ class MainWindow(QMainWindow):
         self.scenes = None
         self.channels = None
         self.selectedChannel = None
+        self.fraction = None
+        self.runAnalysis = False
 
         # Click Events for UI
         self.loadBrowse.clicked.connect(self.browseInputFiles)
@@ -37,6 +39,7 @@ class MainWindow(QMainWindow):
         self.sampleList.itemSelectionChanged.connect(self.loadUpScenes)
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
         self.runButton.clicked.connect(self.createRadialProfile)
+        self.fractionIntensity.valueChanged.connect(self.setFraction)
 
 
     def browseInputFiles(self):
@@ -105,11 +108,18 @@ class MainWindow(QMainWindow):
             print(self.image, self.scenes)
             self.rp = rp.RadialProfiler(self.image, self.scenes, self.channels, self.selectedChannel)
             self.rp.executeScript(Path(self.outputLine.text())) # Run the Analysis
+            if self.analysisButton.isChecked():
+                print(self.fraction)
+                self.rp.analyzeProfiles(self.outputLine.text())
 
         except:
             for attr,mes in zip(attributes,messages):
                 if attr == None:
                     print(mes)
+
+    def setFraction(self):
+        self.fraction = self.fractionIntensity.value()
+
 
 
 def main():
