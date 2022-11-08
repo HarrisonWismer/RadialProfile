@@ -221,27 +221,18 @@ class RadialProfiler:
 
                 plt.plot(normalizedX,radialProfY)
                 plt.savefig(roi / Path("RadialPlotNorm.png"))
-                print(roi / Path("RadialPlotNorm.png"))
                 plt.close()
 
-                ySum = 0
-                xFractionalMin = None
-                for index, yIntensity in enumerate(radialProfY):
-                    print(index, yIntensity)
-                    ySum += yIntensity
-                    
-                    if ySum > np.sum(radialProfY) * fraction:
-                        print("HERE")
-                        xFractionalMin = normalizedX[index]
-                        break
-                    else:
-                        continue
+                
+                cumulIntensity = np.cumsum(radialProfY)
+                xFractionalMin = np.argmax(cumulIntensity >= (np.sum(radialProfY) * fraction))
+
                 
                 radPath = roi / Path("FractionalRadius.csv")
                 # Save in format: fraction,radius
                 with open(radPath, "w") as f:
-                    f.write(str(fraction) + "," + str(xFractionalMin))
-                    f.write("\n")
+                    f.write("Fraction Specified: " + str(fraction) + "\n")
+                    f.write("Minimum Radius Containing Fraction f of total intensity: " + str(xFractionalMin) + "\n")
                 
 
 
