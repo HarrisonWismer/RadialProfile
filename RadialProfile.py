@@ -294,5 +294,5 @@ class RadialProfiler:
             sceneMeans.append(minMean)
         
         for scene,mean in zip(self.scenes,sceneMeans):
-            with open(outputPath / Path("SceneMinMeans.txt"), "a") as f:
+            with open(outputPath / Path("RadialProfiles/SceneMinMeans.txt"), "a") as f:
                 print(scene, ": ", str(mean), file=f)
