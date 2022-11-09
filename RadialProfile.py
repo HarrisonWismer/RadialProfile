@@ -150,7 +150,7 @@ class RadialProfiler:
             # Create the folder within the current working directory to save all of the ROI information.
             scenePath = outputPath / scene
             self.checkPath(scenePath)
-            with open(scenePath / Path(scene + "_table.csv"), "a") as f:
+            with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
                 print("ROI,CenterX,CenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
             
             for index in range(len(view.layers["Centers"].data)):
@@ -197,7 +197,7 @@ class RadialProfiler:
                 plotPath = roiPath / Path("RadialPlot.png")
                 self.simplePlot(np.arange(len(rad)), rad, plotPath)
 
-                with open(scenePath / Path(scene + "_table.csv"), "a") as f:
+                with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
                     print("{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                         str(newX),
                                                         str(newY),
@@ -276,13 +276,13 @@ class RadialProfiler:
                 else:
                     continue
 
-            originalTable = pd.read_csv(scenePath / Path(scene +"_table.csv"),index_col="ROI")
+            originalTable = pd.read_csv(scenePath / Path(scene +"_Table.csv"),index_col="ROI")
             analysisTable = pd.read_csv(scenePath / Path(scene + "_AnalysisTable.csv"),index_col="ROI")
             newTable = originalTable.join(analysisTable)
             newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"))
 
             try:
-                os.remove(scenePath / Path(scene + "_table.csv"))
+                os.remove(scenePath / Path(scene + "_Table.csv"))
                 os.remove(scenePath / Path(scene + "_AnalysisTable.csv"))
             except:
                 pass
@@ -292,5 +292,5 @@ class RadialProfiler:
             sceneMeans.append(minMean)
         
         for scene,mean in zip(self.scenes,sceneMeans):
-            with open(outputPath / Path("RadialProfiles/SceneMinMeans.txt"), "a") as f:
+            with open(outputPath / Path("RadialProfiles/SceneMeanMinRads.txt"), "a") as f:
                 print(scene, ":", str(mean), file=f)
