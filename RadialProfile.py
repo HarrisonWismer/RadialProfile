@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 from pathlib import Path
 import tifffile
+import pandas as pd
 
 class RadialProfiler:
     """
@@ -184,11 +185,6 @@ class RadialProfiler:
                 oldX, oldY = currCenter[0], currCenter[1]
                 newX, newY = int(oldX - xmin), int(oldY-ymin)
 
-                # Save the center point information into a CSV.
-                csvPath = roiPath / Path("Center.csv")
-                with open(csvPath, 'w') as f:
-                    f.write(str(newX) + "," + str(newY))
-
                 # Calculate the radial profile
                 rad = self.radial_profile(cropped, (newY,newX))
 
@@ -232,6 +228,9 @@ class RadialProfiler:
             scenePath = outputPath / Path("RadialProfiles/" + scene)
 
             minRads = []
+
+            with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
+                f.write("Fraction,MinimumRadius,RadialNormalizedPath,RadialPlotNormalizedPath" + "\n")
             
             # Each ROI in the scene
             for roi in scenePath.iterdir():
@@ -246,12 +245,14 @@ class RadialProfiler:
                     # Normalize X values between 0 and 1
                     normalizedX = xValues / np.max(xValues)
 
-                    with open(roi / Path("RadialNormalized.csv"), "w") as f:
+                    normPath = roi / Path("RadialNormalized.csv")
+                    with open(normPath, "w") as f:
                         for x,y in zip(normalizedX, yValues):
                             f.write(str(x) + "," + str(y) + "\n")
 
                     # Save the plot of the normalized data
-                    self.simplePlot(normalizedX, yValues, roi / Path("RadialPlotNormalized.png"))
+                    plotNorm = roi / Path("RadialPlotNormalized.png")
+                    self.simplePlot(normalizedX, yValues, plotNorm)
 
                     # Create array of cumulative intensities and look for the X that contains the fractional intensity.
                     cumulIntensity = np.cumsum(yValues)
@@ -261,19 +262,24 @@ class RadialProfiler:
                     xFractionalMin = normalizedX[fracMinIndex]
                     minRads.append(xFractionalMin)
 
-                    # Save the information in a file of the format
-
                     radPath = roi / Path("FractionalRadius.csv")
-                    # Save in format: fraction,radius
-                    with open(radPath, "w") as f:
-                        f.write("Fraction Specified,Minimum Radius" + "\n")
-                        f.write(str(fraction) + "," + str(xFractionalMin) + "\n")
+                    with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
+                        f.write("{},{},{},{},{}\n".format(roi.name,
+                                                        str(fraction),
+                                                        str(xFractionalMin),
+                                                        str(normPath),
+                                                        str(radPath)))
                 
                 else:
                     continue
 
+            originalTable = pd.read_csv(scenePath / Path(scene +"_table.csv"))
+            analysisTable = pd.read_csv(scenePath / Path(scene + "_AnalysisTable.csv"))
+            newTable = originalTable.join(analysisTable)
+            newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"), index_label=False)
+
             minRads = np.array(minRads)
             minMean = np.mean(minRads)
-            with open(scenePath / Path("MeanMinimumRadius.txt"), "w") as f:
+            with open(scenePath / Path(scene + "_MeanMinimumRadius.txt"), "w") as f:
                 f.write(str(minMean))
             
