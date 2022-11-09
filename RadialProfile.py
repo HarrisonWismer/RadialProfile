@@ -198,12 +198,13 @@ class RadialProfiler:
                 self.simplePlot(np.arange(len(rad)), rad, plotPath)
 
                 with open(scenePath / Path(scene + "_table.csv"), "a") as f:
-                    f.write("{},{},{},{},{},{}\n".format("ROI_" + str(index), 
+                    print("{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                         str(newX),
                                                         str(newY),
                                                         str(radPath),
                                                         str(plotPath),
-                                                        str(imgPath)))
+                                                        str(imgPath)),
+                                                        file=f)
 
 
     def analyzeProfiles(self,outputPath, fraction):
@@ -250,7 +251,7 @@ class RadialProfiler:
                     normPath = roi / Path("RadialNormalized.csv")
                     with open(normPath, "w") as f:
                         for x,y in zip(normalizedX, yValues):
-                            f.write(str(x) + "," + str(y) + "\n")
+                            print(str(x) + "," + str(y),file=f)
 
                     # Save the plot of the normalized data
                     plotNorm = roi / Path("RadialPlotNormalized.png")
@@ -266,12 +267,12 @@ class RadialProfiler:
 
                     radPath = roi / Path("FractionalRadius.csv")
                     with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
-                        f.write("{},{},{},{},{}\n".format(roi.name,
+                        print("{},{},{},{},{}".format(roi.name,
                                                         str(fraction),
                                                         str(xFractionalMin),
                                                         str(normPath),
-                                                        str(radPath)))
-                
+                                                        str(radPath)), 
+                                                        file=f)
                 else:
                     continue
 
