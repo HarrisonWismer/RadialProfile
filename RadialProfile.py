@@ -219,10 +219,20 @@ class RadialProfiler:
             2) Finds the minimum distance that contains x (fraction specified by the user) of the total intesity
             3) Saves the radius within the ROI folder
             4) Calculates the average radius holding x of the total intensity for the entire sample.
+
+        Input:
+            - outputPath -> A specified path to write data to
+            - fraction -> A specified float f (0.00 < f <= 1.00)
+
+        Output:
+            - scene_MasterTable.csv -> Output table that combines the original scene_Table.csv with analysis specific columns.
+            - RadialNormalized.csv -> Normalized (x values) Radial Profile data
+            - RadialPlotNormalized.png -> Normalized Radial Plot
         """
 
         outputPath = Path(outputPath)
-
+        
+        # List of scene average radii for each scene self.scenes
         sceneMeans = []
 
         # Go back over all of the scenes from the current run of the program and run the analysis protocol.
@@ -237,6 +247,7 @@ class RadialProfiler:
             
             # Each ROI in the scene
             for roi in scenePath.iterdir():
+                # Make sure roi is not a .csv file that could be residing in the directory.
                 if roi.is_dir():
                 
                     # Read in the previously generated Radial Profile
@@ -248,6 +259,7 @@ class RadialProfiler:
                     # Normalize X values between 0 and 1
                     normalizedX = xValues / np.max(xValues)
 
+                    # Write out the normalized radial profile data
                     normPath = roi / Path("RadialNormalized.csv")
                     with open(normPath, "w") as f:
                         for x,y in zip(normalizedX, yValues):
@@ -265,6 +277,7 @@ class RadialProfiler:
                     xFractionalMin = normalizedX[fracMinIndex]
                     minRads.append(xFractionalMin)
 
+                    # Write out the AnalysisTable
                     radPath = roi / Path("FractionalRadius.csv")
                     with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
                         print("{},{},{},{},{}".format(roi.name,
@@ -273,20 +286,25 @@ class RadialProfiler:
                                                         str(normPath),
                                                         str(radPath)), 
                                                         file=f)
+                
+                # Skip files that aren't directories
                 else:
                     continue
-
+            
+            # Read in original table and new analysis table and combine the two, and write it out
             originalTable = pd.read_csv(scenePath / Path(scene +"_Table.csv"),index_col="ROI")
             analysisTable = pd.read_csv(scenePath / Path(scene + "_AnalysisTable.csv"),index_col="ROI")
             newTable = originalTable.join(analysisTable)
             newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"))
 
+            # Try to remove the 2 old tables
             try:
                 os.remove(scenePath / Path(scene + "_Table.csv"))
                 os.remove(scenePath / Path(scene + "_AnalysisTable.csv"))
             except:
                 pass
-
+            
+            # Calculate the mean minimum radius for the whole scene
             minRads = np.array(minRads)
             minMean = np.mean(minRads)
             sceneMeans.append(minMean)

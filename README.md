@@ -99,6 +99,10 @@ Each ROI folder contains:
 	- RadialNormalized.csv -> (x,y) pairs resulting from the radial profile analysis in which x values (distances) have been normalized per the protocol (see below)
 	- RadialPlotNormalized.png -> Plot of normalized radial profile
 
+**Note**
+	- Both Radial.csv and RadialNormalized.csv can be read into an array easily with numpy using np.loadtxt(path, delimiter=",")
+	- Any of the CSV tables can be read in with pandas using pd.read_csv(path, index_col="ROI)
+
 ## Optional Analysis:
 
 Currently there is only 1 downstream analysis procedure implemented, though it wouldn't be exceptionally difficuly to expand in the future. Currently, a variation of the RAMP protocol as described in [Guardia et al. 2019](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000279#sec002) is implemented with the following steps:
