@@ -280,7 +280,7 @@ class RadialProfiler:
 
             try:
                 os.remove(scenePath / Path(scene + "_table.csv"))
-                os.remove(scenePath + Path("_AnalysisTable.csv"))
+                os.remove(scenePath + Path(scene + "_AnalysisTable.csv"))
             except:
                 pass
 
