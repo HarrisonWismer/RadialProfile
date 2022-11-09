@@ -103,11 +103,13 @@ class MainWindow(QMainWindow):
 
         #attributes = [self.image, self.scenes,self.channels,self.selectedChannel]
         #messages = ["Image Not Loaded In", "Scenes Not Selected", "Channels Not Loaded", "Channels Not Selected"]
-
-        self.rp = rp.RadialProfiler(self.image, self.scenes, self.channels, self.selectedChannel)
-        self.rp.executeScript(Path(self.outputLine.text())) # Run the Analysis
-        if self.analysisButton.isChecked():
-            self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
+        if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannel is not None:
+            self.rp = rp.RadialProfiler(self.image, self.scenes, self.channels, self.selectedChannel)
+            self.rp.executeScript(Path(self.outputLine.text())) # Run the Analysis
+            if self.analysisButton.isChecked():
+                self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
+        else:
+            pass
 
     def setFraction(self):
         self.fraction = self.fractionIntensity.value()
