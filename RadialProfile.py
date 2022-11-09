@@ -151,7 +151,7 @@ class RadialProfiler:
             scenePath = outputPath / scene
             self.checkPath(scenePath)
             with open(scenePath / Path(scene + "_table.csv"), "a") as f:
-                f.write("CenterX,CenterY,RadialPath,RadialPlotPath,RoiTiffPath" + "\n")
+                print("ROI,CenterX,CenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
             
             for index in range(len(view.layers["Centers"].data)):
 
@@ -192,7 +192,7 @@ class RadialProfiler:
                 radPath = roiPath / Path("Radial.csv")
                 with open(radPath, "w") as f:
                     for ind,intensity in enumerate(rad):
-                        f.write(str(ind) + "," + str(intensity) + "\n")
+                        print(str(ind) + "," + str(intensity), file=f)
 
                 plotPath = roiPath / Path("RadialPlot.png")
                 self.simplePlot(np.arange(len(rad)), rad, plotPath)
@@ -233,7 +233,7 @@ class RadialProfiler:
             minRads = []
 
             with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
-                f.write("Fraction,MinimumRadius,RadialNormalizedPath,RadialPlotNormalizedPath" + "\n")
+                print("ROI,Fraction,MinimumRadius,RadialNormalizedPath,RadialPlotNormalizedPath", file=f)
             
             # Each ROI in the scene
             for roi in scenePath.iterdir():
@@ -276,10 +276,10 @@ class RadialProfiler:
                 else:
                     continue
 
-            originalTable = pd.read_csv(scenePath / Path(scene +"_table.csv"))
-            analysisTable = pd.read_csv(scenePath / Path(scene + "_AnalysisTable.csv"))
+            originalTable = pd.read_csv(scenePath / Path(scene +"_table.csv"),index_col="ROI")
+            analysisTable = pd.read_csv(scenePath / Path(scene + "_AnalysisTable.csv"),index_col="ROI")
             newTable = originalTable.join(analysisTable)
-            newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"), index_label=False)
+            newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"))
 
             try:
                 os.remove(scenePath / Path(scene + "_table.csv"))

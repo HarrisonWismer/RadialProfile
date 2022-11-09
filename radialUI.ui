@@ -181,7 +181,7 @@
      </font>
     </property>
     <property name="text">
-     <string>2. Output File:</string>
+     <string>2. Output Path:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
