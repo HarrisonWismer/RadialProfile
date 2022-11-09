@@ -222,6 +222,8 @@ class RadialProfiler:
 
         outputPath = Path(outputPath)
 
+        sceneMeans = []
+
         # Go back over all of the scenes from the current run of the program and run the analysis protocol.
         for scene in self.scenes:
 
@@ -288,4 +290,9 @@ class RadialProfiler:
             minMean = np.mean(minRads)
             with open(scenePath / Path(scene + "_MeanMinimumRadius.txt"), "w") as f:
                 f.write(str(minMean))
-            
+
+            sceneMeans.append(minMean)
+        
+        for scene,mean in zip(self.scenes,sceneMeans):
+            with open(outputPath / Path("SceneMinMeans.txt"), "a") as f:
+                print(scene, ": ", str(mean), file=f)
