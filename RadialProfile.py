@@ -288,9 +288,6 @@ class RadialProfiler:
 
             minRads = np.array(minRads)
             minMean = np.mean(minRads)
-            with open(scenePath / Path(scene + "_MeanMinimumRadius.txt"), "w") as f:
-                f.write(str(minMean))
-
             sceneMeans.append(minMean)
         
         for scene,mean in zip(self.scenes,sceneMeans):
