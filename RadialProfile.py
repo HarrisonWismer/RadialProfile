@@ -278,6 +278,12 @@ class RadialProfiler:
             newTable = originalTable.join(analysisTable)
             newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"), index_label=False)
 
+            try:
+                os.remove(scenePath / Path(scene + "_table.csv"))
+                os.remove(scenePath + Path("_AnalysisTable.csv"))
+            except:
+                pass
+
             minRads = np.array(minRads)
             minMean = np.mean(minRads)
             with open(scenePath / Path(scene + "_MeanMinimumRadius.txt"), "w") as f:
