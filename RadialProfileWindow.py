@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
             self.channelList.addItems(self.channels)
 
         except:
-            self.inputLine.setText("Not a Valid .LIF file")\
+            self.inputLine.setText("Not a Valid Image File")\
 
     def browseOutputFiles(self):
         """
@@ -108,6 +108,9 @@ class MainWindow(QMainWindow):
             self.rp.executeScript(Path(self.outputLine.text())) # Run the Analysis
             if self.analysisButton.isChecked():
                 self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
+
+            self.rp = None
+
         else:
             pass
 
