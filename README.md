@@ -103,7 +103,7 @@ Each ROI folder contains:
 
 - **Note:**
 	- Both Radial.csv and RadialNormalized.csv can be read into an array easily with numpy using np.loadtxt(path, delimiter=",")
-	- Any of the CSV tables can be read in with pandas using pd.read_csv(path, index_col="ROI)
+	- Any of the CSV tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
 
 ## Optional Analysis:
 
