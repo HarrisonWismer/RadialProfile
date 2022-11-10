@@ -151,7 +151,7 @@ class RadialProfiler:
             scenePath = outputPath / scene
             self.checkPath(scenePath)
             with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
-                print("ROI,CenterX,CenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
+                print("ROI,RelativeCenterX,RelativeCenterY,AbsoluteCenterX,AbsoluteCenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
             
             for index in range(len(view.layers["Centers"].data)):
 
@@ -182,7 +182,7 @@ class RadialProfiler:
                 imgPath = roiPath / Path("ROI_" + str(index) + ".tiff")
                 tifffile.imwrite(imgPath  , cropped)
 
-                oldX, oldY = currCenter[0], currCenter[1]
+                oldX, oldY = int(currCenter[0]), int(currCenter[1])
                 newX, newY = int(oldX - xmin), int(oldY-ymin)
 
                 # Calculate the radial profile
@@ -198,9 +198,11 @@ class RadialProfiler:
                 self.simplePlot(np.arange(len(rad)), rad, plotPath)
 
                 with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
-                    print("{},{},{},{},{},{}".format("ROI_" + str(index), 
+                    print("{},{},{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                         str(newX),
                                                         str(newY),
+                                                        str(oldX),
+                                                        str(oldY),
                                                         str(radPath),
                                                         str(plotPath),
                                                         str(imgPath)),

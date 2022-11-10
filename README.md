@@ -77,8 +77,10 @@ Each Sample folder contains:
 - A folder for each ROI
 - sceneName_table.csv -> A CSV file with a row for each ROI in the scene/sample with the following columns/attributes:
 	- The ROI Number
-	- The X coordinate of the radial centerpoint
-	- The Y coordinate of the radial centerpoint
+	- The relative X coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
+	- The relative Y coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
+	- The absolute X coordinate of the radial centerpoint (In terms of the original image)
+	- The absolute Y coordinate of the radial centerpoint (In terms of the original image)
 	- The path to the Radial.csv file which contains the (x,y) pairs generated from the radial profile analysis
 	- The path to the radial profile plot
 	- The path to the ROI TIFF image file
