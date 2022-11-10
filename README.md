@@ -106,8 +106,7 @@ Each ROI folder contains:
 	- Any of the CSV tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
 
 ## Optional Analysis:
-
-Currently there is only 1 downstream analysis procedure implemented, though it wouldn't be exceptionally difficuly to expand in the future. Currently, a variation of the RAMP protocol as described in [Guardia et al. 2019](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000279#sec002) is implemented with the following steps:
+Currently, an analysis method inspired by the RAMP protocol as described in [Guardia et al. 2019](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000279#sec002) is implemented with the following steps:
 
 1. Given the Radial Profile plot distribution calculated for each ROI, normalize the distances (X-Values) using the largest circle present. This effectively normalizes all distance values to be between 0 and 1.
 2. Define a fraction f (0.00 < f <= 1.00). The analysis procedure finds the minimum radius size that incorporates fraction f of the total itensity.
