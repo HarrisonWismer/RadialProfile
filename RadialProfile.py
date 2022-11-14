@@ -166,8 +166,6 @@ class RadialProfiler:
                 # Calculate the radial profile
                 rp = dip.RadialMean(cropped, binSize=1, center=(newX,newY))
                 rad = np.asarray(rp)
-                print(len(rad))
-                #rad = self.radial_profile(cropped, (newY,newX))
 
                 # Save the Radial Profile Data into a csv
                 radPath = roiPath / Path("Radial.csv")
@@ -293,5 +291,5 @@ class RadialProfiler:
             sceneMeans.append(minMean)
         
         for scene,mean in zip(self.scenes,sceneMeans):
-            with open(outputPath / Path("RadialProfiles/SceneMeanMinRads.txt"), "w") as f:
+            with open(outputPath / Path("RadialProfiles/SceneMeanMinRads.txt"), "a") as f:
                 print(scene, ":", str(mean), file=f)
