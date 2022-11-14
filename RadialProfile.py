@@ -53,11 +53,23 @@ class RadialProfiler:
             - center: The center-point of the circle
         
         '''
+        print("center", center)
+        print("data",data.shape)
         y, x = np.indices((data.shape))
-        r = np.sqrt((x - center[0])**2 + (y - center[1])**2).astype(int)
+        np.savetxt("y.csv",y,delimiter = ",")
+        np.savetxt("x.csv",x, delimiter=",")
+        print("x shape:", x.shape)
+        print("y shape:", y.shape)
+
+        r = np.sqrt((x - center[1])**2 + (y - center[0])**2).astype(int)
+
+        np.savetxt("r.csv",r,delimiter=",")
+        print("r shape:" , r.shape)
         
         tbin = np.bincount(r.ravel(), data.ravel())
         nr = np.bincount(r.ravel())
+        print("tbin shape:", tbin.shape)
+        print("np shape", nr.shape)
         
         radialprofile = tbin / nr # MEAN
         #radialprofile = tbin # SUM
@@ -138,11 +150,11 @@ class RadialProfiler:
                     centerLayer = False
 
 
-            # This grabs the (X x Y) image size into variables x and y
-            s1, s2, x, y = view.layers[0].data.shape
+            # This grabs the (Y X X) image size into variables x and y
+            y, x = view.layers[0].data.shape[2:]
 
             # Creates a mask for every ROI drawn which is then used to "crop" the image.
-            masks = view.layers["ROIs"].to_masks(mask_shape=(x,y))
+            masks = view.layers["ROIs"].to_masks(mask_shape=(y,x))
 
             # User can draw ROI's on whichever Z-Slice they want. Save the current Z-Slice.
             currZ = view.dims.current_step[1]
@@ -165,8 +177,8 @@ class RadialProfiler:
                 view.add_image(maskArray, name = "ROI_" + str(index))
 
                 # Get Min and Max x and y coordinates to create a new image from the cropped image
-                xmin, ymin = np.min(currRoi, axis=0).astype(int) 
-                xmax, ymax = np.max(currRoi, axis=0).astype(int)
+                ymin, xmin = np.min(currRoi, axis=0).astype(int) 
+                ymax, xmax = np.max(currRoi, axis=0).astype(int)
 
                 if xmin < 0: xmin = 0
                 if xmax > x: xmax = x
@@ -174,7 +186,7 @@ class RadialProfiler:
                 if ymax > y: ymax = y 
 
                 # Create numpy array of cropped image.
-                cropped = view.layers["ROI_" + str(index)].data[0][currZ][xmin:xmax,ymin:ymax]
+                cropped = view.layers["ROI_" + str(index)].data[0][currZ][ymin:ymax,xmin:xmax]
 
                 # Save cropped ROI image
                 roiPath = scenePath / Path("ROI_" + str(index))
@@ -182,7 +194,7 @@ class RadialProfiler:
                 imgPath = roiPath / Path("ROI_" + str(index) + ".tiff")
                 tifffile.imwrite(imgPath  , cropped)
 
-                oldX, oldY = int(currCenter[0]), int(currCenter[1])
+                oldY, oldX = int(currCenter[0]), int(currCenter[1])
                 newX, newY = int(oldX - xmin), int(oldY-ymin)
 
                 # Calculate the radial profile

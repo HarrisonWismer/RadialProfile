@@ -19,7 +19,7 @@ If performing a manual installation of necessary packages, the following package
 - matplotlib
 - pathlib
 - tifffile
-- argparse
+- diplib
 
 ## Usage:
 To run the program, simply run the RunRadialProfile.py file.
