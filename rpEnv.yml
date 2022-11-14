@@ -14,4 +14,4 @@ dependencies:
   - pip
 
   - pip:
-    - diplib=3.3.0
+    - diplib==3.3.0

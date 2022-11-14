@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import tifffile
 import pandas as pd
+import diplib as dip
 
 class RadialProfiler:
     """
@@ -40,41 +41,6 @@ class RadialProfiler:
         '''
         if not os.path.exists(path):
             os.makedirs(path)
-
-
-    def radial_profile(self, data, center):
-        '''
-        Performs Radial Profile Calculation
-        Function Comes From: https://stackoverflow.com/questions/21242011/most-efficient-way-to-calculate-radial-profile
-        Answer provided on StackOverflow by user Bi Rico
-
-        Input:
-            - data: Image data in the form of an array
-            - center: The center-point of the circle
-        
-        '''
-        print("center", center)
-        print("data",data.shape)
-        y, x = np.indices((data.shape))
-        np.savetxt("y.csv",y,delimiter = ",")
-        np.savetxt("x.csv",x, delimiter=",")
-        print("x shape:", x.shape)
-        print("y shape:", y.shape)
-
-        r = np.sqrt((x - center[1])**2 + (y - center[0])**2).astype(int)
-
-        np.savetxt("r.csv",r,delimiter=",")
-        print("r shape:" , r.shape)
-        
-        tbin = np.bincount(r.ravel(), data.ravel())
-        nr = np.bincount(r.ravel())
-        print("tbin shape:", tbin.shape)
-        print("np shape", nr.shape)
-        
-        radialprofile = tbin / nr # MEAN
-        #radialprofile = tbin # SUM
-        
-        return radialprofile
 
     def executeScript(self, outputPath):
         """
@@ -198,7 +164,10 @@ class RadialProfiler:
                 newX, newY = int(oldX - xmin), int(oldY-ymin)
 
                 # Calculate the radial profile
-                rad = self.radial_profile(cropped, (newY,newX))
+                rp = dip.RadialMean(cropped, binSize=1, center=(newX,newY))
+                rad = np.asarray(rp)
+                print(len(rad))
+                #rad = self.radial_profile(cropped, (newY,newX))
 
                 # Save the Radial Profile Data into a csv
                 radPath = roiPath / Path("Radial.csv")
