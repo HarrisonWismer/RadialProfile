@@ -66,6 +66,7 @@ class RadialProfiler:
         for scene in self.scenes:
 
             index = self.image.scenes.index(scene)
+            scene = scene.replace(":","_").replace("/","_")
 
             self.image.set_scene(index)
             
@@ -125,7 +126,7 @@ class RadialProfiler:
             currZ = view.dims.current_step[1]
 
             # Create the folder within the current working directory to save all of the ROI information.
-            scenePath = outputPath / scene.replace(":","_")
+            scenePath = outputPath / scene
             self.checkPath(scenePath)
             with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
                 print("ROI,RelativeCenterX,RelativeCenterY,AbsoluteCenterX,AbsoluteCenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
@@ -217,7 +218,8 @@ class RadialProfiler:
 
         # Go back over all of the scenes from the current run of the program and run the analysis protocol.
         for scene in self.scenes:
-
+            
+            scene = scene.replace(":","_").replace("/","_")
             scenePath = outputPath / Path("RadialProfiles/" + scene)
 
             minRads = []
