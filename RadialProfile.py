@@ -115,7 +115,6 @@ class RadialProfiler:
                     roiLayer = False
                     centerLayer = False
 
-
             # This grabs the (Y X X) image size into variables x and y
             y, x = view.layers[0].data.shape[2:]
 
@@ -126,7 +125,7 @@ class RadialProfiler:
             currZ = view.dims.current_step[1]
 
             # Create the folder within the current working directory to save all of the ROI information.
-            scenePath = outputPath / scene
+            scenePath = outputPath / scene.replace(":","_")
             self.checkPath(scenePath)
             with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
                 print("ROI,RelativeCenterX,RelativeCenterY,AbsoluteCenterX,AbsoluteCenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
