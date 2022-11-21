@@ -149,7 +149,8 @@ class RadialProfiler:
                 if xmin < 0: xmin = 0
                 if xmax > x: xmax = x
                 if ymin < 0: ymin = 0
-                if ymax > y: ymax = y 
+                if ymax > y: ymax = y
+                
 
                 # Create numpy array of cropped image.
                 cropped = view.layers["ROI_" + str(index)].data[0][currZ][ymin:ymax,xmin:xmax]
@@ -165,7 +166,13 @@ class RadialProfiler:
 
                 # Calculate the radial profile
                 rp = dip.RadialMean(cropped, binSize=1, center=(newX,newY))
-                rad = np.asarray(rp)
+
+                # Find the longest distance from center to one of the edges and use that distance as the radius
+                maxRads = [abs(xmin-oldX), abs(xmax-oldX), abs(ymin-oldY), abs(ymax-oldY)]
+                radius = max(maxRads)
+                if radius > len(rp):
+                    radius = len(rp)
+                rad = np.asarray(rp[:int(radius)])
 
                 # Save the Radial Profile Data into a csv
                 radPath = roiPath / Path("Radial.csv")

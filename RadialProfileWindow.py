@@ -53,10 +53,13 @@ class MainWindow(QMainWindow):
         try:
             path = Path(self.inputLine.text())
             self.image = AICSImage(path)
+            self.sampleList.clear()
             self.sampleList.addItems(list(self.image.scenes))
 
             # Assumes each sample has the same number ofchannels
             nChannels = self.image.data.shape[1]
+            self.channels = []
+            self.channelList.clear()
             self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
             self.channelList.addItems(self.channels)
 
@@ -92,7 +95,10 @@ class MainWindow(QMainWindow):
         """
         Get the single channel to be used to measure intensity upon selection in the QListWidget.
         """
-        self.selectedChannel = [channel.text() for channel in self.channelList.selectedItems()][0]
+        try:
+            self.selectedChannel = [channel.text() for channel in self.channelList.selectedItems()][0]
+        except:
+            pass
 
     def createRadialProfile(self):
         """
