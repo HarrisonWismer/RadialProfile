@@ -1,0 +1,8 @@
+Radial Profile Plugin:
+	Center Point: (546,509)
+	ROI Used: Napari Circular Shape
+	Radius: 400
+
+FIJI:
+	Center Point: (546,509)
+	Radius: 400
