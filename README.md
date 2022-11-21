@@ -16,6 +16,7 @@ If performing a manual installation of necessary packages, the following package
 - numpy
 - aicsimageio
 - readlif
+- aicspylibczi
 - matplotlib
 - pathlib
 - tifffile
