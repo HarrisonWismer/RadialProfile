@@ -16,6 +16,7 @@ If performing a manual installation of necessary packages, the following package
 - numpy
 - aicsimageio
 - readlif
+- aicspylibczi
 - matplotlib
 - pathlib
 - tifffile
@@ -105,7 +106,7 @@ Each ROI folder contains:
 	- Both Radial.csv and RadialNormalized.csv can be read into an array easily with numpy using np.loadtxt(path, delimiter=",")
 	- Any of the CSV tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
 
-## Optional Analysis:
+## Optional Analysis (Work In Progress):
 Currently, an analysis method inspired by the RAMP protocol as described in [Guardia et al. 2019](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000279#sec002) is implemented with the following steps:
 
 1. Given the Radial Profile plot distribution calculated for each ROI, normalize the distances (X-Values) using the largest circle present. This effectively normalizes all distance values to be between 0 and 1.
