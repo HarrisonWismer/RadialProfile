@@ -72,7 +72,7 @@ class RadialProfiler:
             
             # Set appropriate channel colors and layer labels
             labels = self.channels
-            colormaps = ["blue" , "red", "green"]
+            colormaps = ["blue" , "red", "green"] + ["gray" for i in range(self.image.data.shape[1])]
             
             # In Case the # Of Points != # ROIs
             dimMatch = False
