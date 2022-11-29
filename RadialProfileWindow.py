@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
         # Attributes needed to instantiate RadialProfile instance.
         self.image = None
         self.scenes = None
+        self.sceneDict = None
         self.channels = None
         self.selectedChannel = None
         self.fraction = self.fractionIntensity.value()
@@ -50,21 +51,32 @@ class MainWindow(QMainWindow):
         file = QFileDialog.getOpenFileName(self, "Select Input File")
         self.inputLine.setText(file[0])
 
-        try:
-            path = Path(self.inputLine.text())
-            self.image = AICSImage(path)
-            self.sampleList.clear()
-            self.sampleList.addItems(list(self.image.scenes))
+        #try:
+        path = Path(self.inputLine.text())
+        self.image = AICSImage(path)
+        self.sampleList.clear()
 
-            # Assumes each sample has the same number ofchannels
-            nChannels = self.image.data.shape[1]
-            self.channels = []
-            self.channelList.clear()
-            self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
-            self.channelList.addItems(self.channels)
+        if path.suffix == ".czi":
+            sceneNames = [str(path.name).split(".czi")[0] + "-" + str(index) for index in range(len(self.image.scenes))]
+            self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
+            self.scenes = list(self.sceneDict.keys())
+            self.sampleList.addItems(list(self.sceneDict.keys()))
 
-        except:
-            self.inputLine.setText("Not a Valid Image File")\
+        else:
+            self.sceneDict = {scene:scene for scene in self.image.scenes}
+            self.scenes = list(self.sceneDict.keys())
+            self.sampleList.addItems(list(self.sceneDict.keys()))
+
+
+        # Assumes each sample has the same number ofchannels
+        nChannels = self.image.data.shape[1]
+        self.channels = []
+        self.channelList.clear()
+        self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
+        self.channelList.addItems(self.channels)
+
+        #except:
+        #    self.inputLine.setText("Cannot Read Image File")
 
     def browseOutputFiles(self):
         """
@@ -108,8 +120,8 @@ class MainWindow(QMainWindow):
         """
 
         # Check if object can be instantiated, otherwise do nothing
-        if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannel is not None:
-            self.rp = rp.RadialProfiler(self.image, self.scenes, self.channels, self.selectedChannel)
+        if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannel is not None and self.sceneDict is not None:
+            self.rp = rp.RadialProfiler(self.image, self.scenes, self.sceneDict, self.channels, self.selectedChannel)
             self.rp.executeScript(Path(self.outputLine.text()))
             # Run downstream analysis option is specified
             if self.analysisButton.isChecked():

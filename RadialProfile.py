@@ -17,9 +17,10 @@ class RadialProfiler:
         - selectedChannel -> The name of the channel from which intensity values will be taken.
     """
 
-    def __init__(self, image, scenes, channels, selectedChannel):
+    def __init__(self, image, scenes, sceneDict, channels, selectedChannel):
         self.image = image
         self.scenes = scenes
+        self.sceneDict = sceneDict
         self.channels = channels
         self.selectedChannel = selectedChannel
 
@@ -64,9 +65,10 @@ class RadialProfiler:
 
         # The supplied .lif file has multiple scenes, each corresponding to different conditions.
         for scene in self.scenes:
-
-            index = self.image.scenes.index(scene)
-            scene = scene.replace(":","_").replace("/","_")
+            
+            origScene = self.sceneDict[scene]
+            index = self.image.scenes.index(origScene)
+            sceneName = scene.replace(":","_").replace("/","_")
 
             self.image.set_scene(index)
             
@@ -126,9 +128,9 @@ class RadialProfiler:
             currZ = view.dims.current_step[1]
 
             # Create the folder within the current working directory to save all of the ROI information.
-            scenePath = outputPath / scene
+            scenePath = outputPath / sceneName
             self.checkPath(scenePath)
-            with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
+            with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
                 print("ROI,RelativeCenterX,RelativeCenterY,AbsoluteCenterX,AbsoluteCenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
             
             for index in range(len(view.layers["Centers"].data)):
@@ -154,6 +156,7 @@ class RadialProfiler:
 
                 # Create numpy array of cropped image.
                 cropped = view.layers["ROI_" + str(index)].data[0][currZ][ymin:ymax,xmin:xmax]
+                print("CROPPED", cropped.shape)
 
                 # Save cropped ROI image
                 roiPath = scenePath / Path("ROI_" + str(index))
@@ -183,7 +186,7 @@ class RadialProfiler:
                 plotPath = roiPath / Path("RadialPlot.png")
                 self.simplePlot(np.arange(len(rad)), rad, plotPath)
 
-                with open(scenePath / Path(scene + "_Table.csv"), "a") as f:
+                with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
                     print("{},{},{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                         str(newX),
                                                         str(newY),
@@ -225,7 +228,7 @@ class RadialProfiler:
 
         # Go back over all of the scenes from the current run of the program and run the analysis protocol.
         for scene in self.scenes:
-            
+
             scene = scene.replace(":","_").replace("/","_")
             scenePath = outputPath / Path("RadialProfiles/" + scene)
 
