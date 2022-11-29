@@ -51,32 +51,32 @@ class MainWindow(QMainWindow):
         file = QFileDialog.getOpenFileName(self, "Select Input File")
         self.inputLine.setText(file[0])
 
-        #try:
-        path = Path(self.inputLine.text())
-        self.image = AICSImage(path)
-        self.sampleList.clear()
+        try:
+            path = Path(self.inputLine.text())
+            self.image = AICSImage(path)
+            self.sampleList.clear()
 
-        if path.suffix == ".czi":
-            sceneNames = [str(path.name).split(".czi")[0] + "-" + str(index) for index in range(len(self.image.scenes))]
-            self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
-            self.scenes = list(self.sceneDict.keys())
-            self.sampleList.addItems(list(self.sceneDict.keys()))
+            if path.suffix == ".czi":
+                sceneNames = [str(path.name).split(".czi")[0] + "-" + str(index) for index in range(len(self.image.scenes))]
+                self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
+                self.scenes = list(self.sceneDict.keys())
+                self.sampleList.addItems(list(self.sceneDict.keys()))
 
-        else:
-            self.sceneDict = {scene:scene for scene in self.image.scenes}
-            self.scenes = list(self.sceneDict.keys())
-            self.sampleList.addItems(list(self.sceneDict.keys()))
+            else:
+                self.sceneDict = {scene:scene for scene in self.image.scenes}
+                self.scenes = list(self.sceneDict.keys())
+                self.sampleList.addItems(list(self.sceneDict.keys()))
 
 
-        # Assumes each sample has the same number ofchannels
-        nChannels = self.image.data.shape[1]
-        self.channels = []
-        self.channelList.clear()
-        self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
-        self.channelList.addItems(self.channels)
+            # Assumes each sample has the same number ofchannels
+            nChannels = self.image.data.shape[1]
+            self.channels = []
+            self.channelList.clear()
+            self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
+            self.channelList.addItems(self.channels)
 
-        #except:
-        #    self.inputLine.setText("Cannot Read Image File")
+        except:
+            self.inputLine.setText("Cannot Read Image File")
 
     def browseOutputFiles(self):
         """
