@@ -156,7 +156,6 @@ class RadialProfiler:
 
                 # Create numpy array of cropped image.
                 cropped = view.layers["ROI_" + str(index)].data[0][currZ][ymin:ymax,xmin:xmax]
-                print("CROPPED", cropped.shape)
 
                 # Save cropped ROI image
                 roiPath = scenePath / Path("ROI_" + str(index))
