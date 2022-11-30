@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
             self.image = AICSImage(path)
             self.sampleList.clear()
 
-            if path.suffix == ".czi":
+            if path.suffix != ".lif":
                 sceneNames = [str(path.name).split(".czi")[0] + "-" + str(index) for index in range(len(self.image.scenes))]
                 self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
                 self.scenes = list(self.sceneDict.keys())
