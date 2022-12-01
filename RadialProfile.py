@@ -149,9 +149,16 @@ class RadialProfiler:
                 ymax, xmax = np.max(currRoi, axis=0).astype(int)
 
                 if xmin < 0: xmin = 0
+                if xmin > x: xmin = x
+
                 if xmax > x: xmax = x
+                if xmax < 0: xmax = 0
+
                 if ymin < 0: ymin = 0
+                if ymin > y: ymin = y
+
                 if ymax > y: ymax = y
+                if ymax < 0: ymax = 0
                 
 
                 # Create numpy array of cropped image.
