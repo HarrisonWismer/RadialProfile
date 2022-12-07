@@ -22,7 +22,7 @@ class RadialProfiler:
         self.scenes = scenes
         self.sceneDict = sceneDict
         self.channels = channels
-        self.selectedChannels = selectedChannels
+        self.selectedChannels = sorted(selectedChannels)
         self.pixelSize = pixelSize
         self.unit = unit
 
@@ -36,7 +36,6 @@ class RadialProfiler:
         for xVals,yVals,channel in zip(x,y,channels):
             plt.plot(xVals, yVals, label = channel)
 
-        #plt.plot(x,y)
         plt.xlabel("Radius [" + self.unit + "]")
         plt.ylabel("Normalized Intensity")
         plt.legend()
