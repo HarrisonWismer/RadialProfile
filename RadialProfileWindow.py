@@ -28,9 +28,9 @@ class MainWindow(QMainWindow):
         self.scenes = None
         self.sceneDict = None
         self.channels = None
-        self.selectedChannel = None
-        self.fraction = self.fractionIntensity.value()
-        self.runAnalysis = False
+        self.selectedChannels = None
+        self.pixelSize = None
+        self.unit = None
 
         # Click Events for UI
         self.loadBrowse.clicked.connect(self.browseInputFiles)
@@ -39,8 +39,8 @@ class MainWindow(QMainWindow):
         self.clearAllSamples.clicked.connect(self.clearAllScenes)
         self.sampleList.itemSelectionChanged.connect(self.loadUpScenes)
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
+        self.xyScale.valueChanged.connect(self.setPixelSize)
         self.runButton.clicked.connect(self.createRadialProfile)
-        self.fractionIntensity.valueChanged.connect(self.setFraction)
 
 
     def browseInputFiles(self):
@@ -56,19 +56,26 @@ class MainWindow(QMainWindow):
             self.image = AICSImage(path)
             self.sampleList.clear()
 
-            if path.suffix != ".lif":
+            xScale = self.image.physical_pixel_sizes[2]
+            self.pixelSize = xScale
+            self.xyScale.setValue(self.pixelSize)
+            self.unit = self.unitLabel.text()
+
+            if path.suffix == ".czi":
                 sceneNames = [str(path.name).split(".czi")[0] + "-" + str(index) for index in range(len(self.image.scenes))]
                 self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
                 self.scenes = list(self.sceneDict.keys())
                 self.sampleList.addItems(list(self.sceneDict.keys()))
 
-            else:
+            elif path.suffix == ".lif":
                 self.sceneDict = {scene:scene for scene in self.image.scenes}
                 self.scenes = list(self.sceneDict.keys())
                 self.sampleList.addItems(list(self.sceneDict.keys()))
 
+            else:
+                pass
 
-            # Assumes each sample has the same number ofchannels
+            # Assumes each sample has the same number of channels
             nChannels = self.image.data.shape[1]
             self.channels = []
             self.channelList.clear()
@@ -76,7 +83,7 @@ class MainWindow(QMainWindow):
             self.channelList.addItems(self.channels)
 
         except:
-            self.inputLine.setText("Cannot Read Image File")
+            self.inputLine.setText("Error Reading Image File")
 
     def browseOutputFiles(self):
         """
@@ -108,7 +115,7 @@ class MainWindow(QMainWindow):
         Get the single channel to be used to measure intensity upon selection in the QListWidget.
         """
         try:
-            self.selectedChannel = [channel.text() for channel in self.channelList.selectedItems()][0]
+            self.selectedChannels = [channel.text() for channel in self.channelList.selectedItems()]
         except:
             pass
 
@@ -120,20 +127,25 @@ class MainWindow(QMainWindow):
         """
 
         # Check if object can be instantiated, otherwise do nothing
-        if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannel is not None and self.sceneDict is not None:
-            self.rp = rp.RadialProfiler(self.image, self.scenes, self.sceneDict, self.channels, self.selectedChannel)
+        if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannels is not None and self.sceneDict is not None and self.pixelSize is not None and self.unit is not None:
+            self.rp = rp.RadialProfiler(self.image, self.scenes, self.sceneDict, self.channels, self.selectedChannels, self.pixelSize, self.unit)
             self.rp.executeScript(Path(self.outputLine.text()))
             # Run downstream analysis option is specified
-            if self.analysisButton.isChecked():
-                self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
+            #if self.analysisButton.isChecked():
+            #   self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
 
             self.rp = None
 
         else:
             pass
 
-    def setFraction(self):
-        self.fraction = self.fractionIntensity.value()
+    def setPixelSize(self):
+        self.pixelsize = self.xyScale.value()
+
+    def setUnit(self):
+        self.unit = self.unitLabel.text()
+    #def setFraction(self):
+    #self.fraction = self.fractionIntensity.value()
 
 
 
@@ -142,8 +154,6 @@ def main():
     mainWindow = MainWindow()
     widget=QtWidgets.QStackedWidget()
     widget.addWidget(mainWindow)
-    widget.setFixedWidth(530)
-    widget.setFixedHeight(450)
     widget.show()
     sys.exit(app.exec())
 if __name__=="__main__":
