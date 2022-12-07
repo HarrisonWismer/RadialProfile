@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self.sampleList.itemSelectionChanged.connect(self.loadUpScenes)
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
         self.xyScale.valueChanged.connect(self.setPixelSize)
+        self.unitLabel.textChanged.connect(self.setUnit)
         self.runButton.clicked.connect(self.createRadialProfile)
 
 
@@ -135,6 +136,7 @@ class MainWindow(QMainWindow):
         # Check if object can be instantiated, otherwise do nothing
         if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannels is not None and self.sceneDict is not None and self.pixelSize is not None and self.unit is not None:
             self.rp = rp.RadialProfiler(self.image, self.scenes, self.sceneDict, self.channels, self.selectedChannels, self.pixelSize, self.unit)
+            print(self.pixelSize, self.unit)
             self.rp.executeScript(Path(self.outputLine.text()))
             # Run downstream analysis option is specified
             #if self.analysisButton.isChecked():
@@ -146,7 +148,7 @@ class MainWindow(QMainWindow):
             pass
 
     def setPixelSize(self):
-        self.pixelsize = self.xyScale.value()
+        self.pixelSize = self.xyScale.value()
 
     def setUnit(self):
         self.unit = self.unitLabel.text()

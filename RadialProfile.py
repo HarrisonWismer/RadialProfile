@@ -128,8 +128,6 @@ class RadialProfiler:
 
             # This grabs the (Y X X) image size into variables x and y
             y, x = view.layers[0].data.shape[2:]
-            y, x = int(y), int(x)
-            print("Image Size:", y,x)
 
             # Creates a mask for every ROI drawn which is then used to "crop" the image.
             masks = view.layers["ROIs"].to_masks(mask_shape=(y,x))
