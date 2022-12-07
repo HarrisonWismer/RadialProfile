@@ -168,7 +168,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Microns</string>
+         <string>Pixels</string>
         </property>
        </widget>
       </item>

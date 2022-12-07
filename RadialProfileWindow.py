@@ -57,23 +57,28 @@ class MainWindow(QMainWindow):
             self.sampleList.clear()
 
             xScale = self.image.physical_pixel_sizes[2]
-            self.pixelSize = xScale
-            self.xyScale.setValue(self.pixelSize)
+            if xScale == None:
+                self.pixelSize = self.xyScale.value()
+                self.xyScale.setValue(1)
+                self.unitLabel.setText("Pixels")
+            else:
+                self.pixelSize = xScale
+                self.xyScale.setValue(self.pixelSize)
+                self.unitLabel.setText("Microns")
+
             self.unit = self.unitLabel.text()
 
-            if path.suffix == ".czi":
-                sceneNames = [str(path.name).split(".czi")[0] + "-" + str(index) for index in range(len(self.image.scenes))]
+            if path.suffix != ".lif":
+                sceneNames = [str(path.name).split(".")[0] + "_" + str(index) for index in range(len(self.image.scenes))]
                 self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
                 self.scenes = list(self.sceneDict.keys())
                 self.sampleList.addItems(list(self.sceneDict.keys()))
 
-            elif path.suffix == ".lif":
+            else:
                 self.sceneDict = {scene:scene for scene in self.image.scenes}
                 self.scenes = list(self.sceneDict.keys())
                 self.sampleList.addItems(list(self.sceneDict.keys()))
 
-            else:
-                pass
 
             # Assumes each sample has the same number of channels
             nChannels = self.image.data.shape[1]
@@ -82,7 +87,8 @@ class MainWindow(QMainWindow):
             self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
             self.channelList.addItems(self.channels)
 
-        except:
+        except Exception as e:
+            print(e)
             self.inputLine.setText("Error Reading Image File")
 
     def browseOutputFiles(self):
