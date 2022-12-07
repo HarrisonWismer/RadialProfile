@@ -59,8 +59,8 @@ class MainWindow(QMainWindow):
 
             xScale = self.image.physical_pixel_sizes[2]
             if xScale == None:
-                self.pixelSize = self.xyScale.value()
                 self.xyScale.setValue(1)
+                self.pixelSize = self.xyScale.value()
                 self.unitLabel.setText("Pixels")
             else:
                 self.pixelSize = xScale
@@ -88,8 +88,7 @@ class MainWindow(QMainWindow):
             self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
             self.channelList.addItems(self.channels)
 
-        except Exception as e:
-            print(e)
+        except:
             self.inputLine.setText("Error Reading Image File")
 
     def browseOutputFiles(self):
@@ -134,13 +133,19 @@ class MainWindow(QMainWindow):
         """
 
         # Check if object can be instantiated, otherwise do nothing
-        if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannels is not None and self.sceneDict is not None and self.pixelSize is not None and self.unit is not None:
-            self.rp = rp.RadialProfiler(self.image, self.scenes, self.sceneDict, self.channels, self.selectedChannels, self.pixelSize, self.unit)
-            self.rp.executeScript(Path(self.outputLine.text()))
-            # Run downstream analysis option is specified
-            #if self.analysisButton.isChecked():
-            #   self.rp.analyzeProfiles(self.outputLine.text(),self.fraction)
+        if (self.image is not None and self.scenes is not None and 
+            self.channels is not None and self.selectedChannels is not None and 
+            self.sceneDict is not None and self.pixelSize is not None 
+            and self.unit is not None):
 
+            self.rp = rp.RadialProfiler(self.image, 
+                                        self.scenes, 
+                                        self.sceneDict, 
+                                        self.channels, 
+                                        self.selectedChannels, 
+                                        self.pixelSize, 
+                                        self.unit)
+            self.rp.executeScript(Path(self.outputLine.text()))
             self.rp = None
 
         else:
@@ -151,8 +156,6 @@ class MainWindow(QMainWindow):
 
     def setUnit(self):
         self.unit = self.unitLabel.text()
-    #def setFraction(self):
-    #self.fraction = self.fractionIntensity.value()
 
 
 

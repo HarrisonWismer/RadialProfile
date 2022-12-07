@@ -29,8 +29,11 @@ class RadialProfiler:
     def simplePlot(self, x, y, channels, path):
         """
         Output a simple plot for quick visualization purposes.
-        Input: X values, Y values, Path that includes a file name
-        Output: A Plot
+        Input:  List of 1 or more lists of x values
+                List of 1 or more lists of y values
+                Channel names for labels (should be length of x and y)
+                Path that includes a file name
+        Output: A Plot of radial profiles for each channel
         """
 
         for xVals,yVals,channel in zip(x,y,channels):
@@ -166,6 +169,7 @@ class RadialProfiler:
                 xRPs = []
                 yRPs = []
                 channels = []
+
 
                 # Create Mask for Cropping and add it as a new layer
                 for channel in self.selectedChannels:
