@@ -136,7 +136,6 @@ class MainWindow(QMainWindow):
         # Check if object can be instantiated, otherwise do nothing
         if self.image is not None and self.scenes is not None and self.channels is not None and self.selectedChannels is not None and self.sceneDict is not None and self.pixelSize is not None and self.unit is not None:
             self.rp = rp.RadialProfiler(self.image, self.scenes, self.sceneDict, self.channels, self.selectedChannels, self.pixelSize, self.unit)
-            print(self.pixelSize, self.unit)
             self.rp.executeScript(Path(self.outputLine.text()))
             # Run downstream analysis option is specified
             #if self.analysisButton.isChecked():
