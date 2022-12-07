@@ -22,20 +22,24 @@ class RadialProfiler:
         self.scenes = scenes
         self.sceneDict = sceneDict
         self.channels = channels
-        self.selectedChannels = selectedChannels[0]
-        print(self.selectedChannels)
+        self.selectedChannels = selectedChannels
         self.pixelSize = pixelSize
         self.unit = unit
 
-    def simplePlot(self,x,y,path):
+    def simplePlot(self, x, y, channels, path):
         """
         Output a simple plot for quick visualization purposes.
         Input: X values, Y values, Path that includes a file name
         Output: A Plot
         """
-        plt.plot(x,y)
+
+        for xVals,yVals,channel in zip(x,y,channels):
+            plt.plot(xVals, yVals, label = channel)
+
+        #plt.plot(x,y)
         plt.xlabel("Radius [" + self.unit + "]")
         plt.ylabel("Normalized Intensity")
+        plt.legend()
         plt.savefig(path)
         plt.close()
 
@@ -125,7 +129,8 @@ class RadialProfiler:
 
             # This grabs the (Y X X) image size into variables x and y
             y, x = view.layers[0].data.shape[2:]
-            print(y,x)
+            y, x = int(y), int(x)
+            print("Image Size:", y,x)
 
             # Creates a mask for every ROI drawn which is then used to "crop" the image.
             masks = view.layers["ROIs"].to_masks(mask_shape=(y,x))
@@ -146,62 +151,68 @@ class RadialProfiler:
                 currRoi = view.layers["ROIs"].data[index]
                 currMask = masks[index]
 
-                # Create Mask for Cropping and add it as a new layer
-                maskArray = np.where(currMask==1, view.layers[self.selectedChannels].data , currMask.astype(int))
-                view.add_image(maskArray, name = "ROI_" + str(index))
-
                 # Get Min and Max x and y coordinates to create a new image from the cropped image
                 ymin, xmin = np.min(currRoi, axis=0).astype(int) 
                 ymax, xmax = np.max(currRoi, axis=0).astype(int)
 
                 if xmin < 0: xmin = 0
                 if xmin > x: xmin = x
-
                 if xmax > x: xmax = x
                 if xmax < 0: xmax = 0
 
                 if ymin < 0: ymin = 0
                 if ymin > y: ymin = y
-
                 if ymax > y: ymax = y
                 if ymax < 0: ymax = 0
-                
 
-                # Create numpy array of cropped image.
-                print(ymin,ymax,xmin,xmax)
-                cropped = view.layers["ROI_" + str(index)].data[0][currZ][int(ymin):int(ymax),int(xmin):int(xmax)]
 
-                # Save cropped ROI image
-                roiPath = scenePath / Path("ROI_" + str(index))
-                self.checkPath(roiPath)
-                imgPath = roiPath / Path("ROI_" + str(index) + ".tiff")
-                tifffile.imwrite(imgPath  , cropped)
+                xRPs = []
+                yRPs = []
+                channels = []
 
-                oldY, oldX = int(currCenter[0]), int(currCenter[1])
-                newX, newY = int(oldX - xmin), int(oldY-ymin)
+                # Create Mask for Cropping and add it as a new layer
+                for channel in self.selectedChannels:
 
-                # Calculate the radial profile
-                rp = dip.RadialMean(cropped, binSize=1, center=(newX,newY))
+                    maskArray = np.where(currMask==1, view.layers[channel].data , currMask.astype(int))
+                    view.add_image(maskArray, name = "ROI_" + str(index) + channel)
 
-                # Find the longest distance from center to one of the edges and use that distance as the radius
-                maxRads = [abs(xmin-oldX), abs(xmax-oldX), abs(ymin-oldY), abs(ymax-oldY)]
-                radius = max(maxRads)
-                if radius > len(rp):
-                    radius = len(rp)
+            
+                    # Create numpy array of cropped image.
+                    cropped = view.layers["ROI_" + str(index) + channel].data[0][currZ][ymin:ymax,xmin:xmax]
 
-                yRad = np.asarray(rp[:int(radius)])
-                xRad = np.asarray([ind * self.pixelSize for ind in range(len(yRad))])
+                    # Save cropped ROI image
+                    roiPath = scenePath / Path("ROI_" + str(index))
+                    self.checkPath(roiPath)
+                    imgPath = roiPath / Path("ROI_" + str(index) + "_" + channel + ".tiff")
+                    tifffile.imwrite(imgPath  , cropped)
 
-                # Save the Radial Profile Data into a csv
-                radPath = roiPath / Path("Radial.csv")
-                with open(radPath, "w") as f:
-                    for x, y in zip(xRad,yRad):
-                        print(str(x) + "," + str(y), file = f)
-                    #for ind,intensity in enumerate(rad):
-                    #    print(str(ind * self.pixelSize) + "," + str(intensity), file=f)
+                    oldY, oldX = int(currCenter[0]), int(currCenter[1])
+                    newX, newY = int(oldX - xmin), int(oldY-ymin)
+
+                    # Calculate the radial profile
+                    rp = dip.RadialMean(cropped, binSize=1, center=(newX,newY))
+
+                    # Find the longest distance from center to one of the edges and use that distance as the radius
+                    maxRads = [abs(xmin-oldX), abs(xmax-oldX), abs(ymin-oldY), abs(ymax-oldY)]
+                    radius = max(maxRads)
+                    if radius > len(rp):
+                        radius = len(rp)
+
+                    yRad = np.asarray(rp[:int(radius)])
+                    xRad = np.asarray([ind * self.pixelSize for ind in range(len(yRad))])
+
+                    xRPs.append(xRad)
+                    yRPs.append(yRad)
+                    channels.append(channel)
+
+                    # Save the Radial Profile Data into a csv
+                    radPath = roiPath / Path("Radial" + "_" + channel + ".csv")
+                    with open(radPath, "w") as f:
+                        for xVal, yVal in zip(xRad,yRad):
+                            print(str(xVal) + "," + str(yVal), file = f)
 
                 plotPath = roiPath / Path("RadialPlot.png")
-                self.simplePlot(xRad, yRad, plotPath)
+                self.simplePlot(xRPs, yRPs, channels, plotPath)
 
                 with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
                     print("{},{},{},{},{},{},{},{}".format("ROI_" + str(index), 
@@ -214,7 +225,7 @@ class RadialProfiler:
                                                         str(imgPath)),
                                                         file=f)
 
-
+    '''
     def analyzeProfiles(self,outputPath, fraction):
         """
         Implement the analysis protocol implemented utilized in:
@@ -321,3 +332,4 @@ class RadialProfiler:
         for scene,mean in zip(self.scenes,sceneMeans):
             with open(outputPath / Path("RadialProfiles/SceneMeanMinRads.txt"), "a") as f:
                 print(scene, ":", str(mean), file=f)
+    '''
