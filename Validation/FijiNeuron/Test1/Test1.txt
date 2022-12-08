@@ -2,3 +2,4 @@ Test 1:
 
 	Center: 205,225
 	Radius: 60 Pixels
+	X&Y Scale: .16 Microns
