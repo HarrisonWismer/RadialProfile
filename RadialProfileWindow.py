@@ -157,14 +157,9 @@ class MainWindow(QMainWindow):
     def setUnit(self):
         self.unit = self.unitLabel.text()
 
-
-
 def main():
     app = QApplication(sys.argv)
     mainWindow = MainWindow()
-    #widget=QtWidgets.QStackedWidget()
-    #widget.addWidget(mainWindow)
-    #widget.show()
     mainWindow.show()
     sys.exit(app.exec())
 if __name__=="__main__":
