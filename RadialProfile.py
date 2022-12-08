@@ -29,15 +29,15 @@ class RadialProfiler:
     def simplePlot(self, x, y, channels, path):
         """
         Output a simple plot for quick visualization purposes.
-        Input:  List of 1 or more lists of x values
+        Input:  List of 1 of x values with same length as each list in y
                 List of 1 or more lists of y values
                 Channel names for labels (should be length of x and y)
                 Path that includes a file name
         Output: A Plot of radial profiles for each channel
         """
-
-        for xVals,yVals,channel in zip(x,y,channels):
-            plt.plot(xVals, yVals, label = channel)
+        
+        for yVals,channel in zip(y,channels):
+            plt.plot(x, yVals, label = channel)
 
         plt.xlabel("Radius [" + self.unit + "]")
         plt.ylabel("Normalized Intensity")
@@ -66,7 +66,7 @@ class RadialProfiler:
                 - A single folder for each sample labeled with the sample name each containing:
                     - A folder for each ROI drawn, named with convention ROI_n, each containing:
                         - center.csv -> A file containing the center point of the circle used for analysis/
-                        - radial.csv -> A file containing the radial data from the ROI. Can be read using np.loadtxt()
+                        - radial.csv -> A csv file with x values and subsequent y values for each channel
                         - ROI_n.tiff -> A TIFF file of the ROI with bounding box blacked out.
                         - RadialPlot.png -> An image of the plotted Radial Profile.
         """
@@ -109,9 +109,23 @@ class RadialProfiler:
                     roiLayer = view.add_shapes(name="ROIs")
                 else:
                     if len(roiLayer.data) != 0:
-                        roiLayer = view.add_shapes(roiLayer.data, name="ROIs")
+
+                        # Try adding each type of shape to avoid type errors
+                        try:
+                            roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type="ellipse")
+                        except:
+                            try:
+                                roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type="polygon")
+                            except:
+                                try:
+                                    roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type="rectangle")
+                                except:
+                                    print("WARNING: UNABLE TO CREATE ADD SHAPES (Use only Polygon, Ellipse, Rectangle")
+                                    pass
+
                     else:
                         roiLayer = view.add_shapes(name="ROIs")
+
                 # Create Center Layer (")
                 if centerLayer == None:
                     centerLayer = view.add_points(name="Centers")
@@ -141,8 +155,8 @@ class RadialProfiler:
             # Create the folder within the current working directory to save all of the ROI information.
             scenePath = outputPath / sceneName
             self.checkPath(scenePath)
-            with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
-                print("ROI,RelativeCenterX,RelativeCenterY,AbsoluteCenterX,AbsoluteCenterY,RadialPath,RadialPlotPath,RoiTiffPath",file=f)
+            with open(scenePath / Path(sceneName + "_Table.csv"), "w") as f:
+                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,RadialPath,RadialPlotPath", file=f)
             
             for index in range(len(view.layers["Centers"].data)):
 
@@ -166,18 +180,14 @@ class RadialProfiler:
                 if ymax < 0: ymax = 0
 
 
-                xRPs = []
+                # List of lists to hold each set of intensity values from each channel
                 yRPs = []
-                channels = []
-
-
                 # Create Mask for Cropping and add it as a new layer
                 for channel in self.selectedChannels:
 
                     maskArray = np.where(currMask==1, view.layers[channel].data , currMask.astype(int))
                     view.add_image(maskArray, name = "ROI_" + str(index) + channel)
 
-            
                     # Create numpy array of cropped image.
                     cropped = view.layers["ROI_" + str(index) + channel].data[0][currZ][ymin:ymax,xmin:xmax]
 
@@ -200,137 +210,34 @@ class RadialProfiler:
                         radius = len(rp)
 
                     yRad = np.asarray(rp[:int(radius)])
-                    xRad = np.asarray([ind * self.pixelSize for ind in range(len(yRad))])
-
-                    xRPs.append(xRad)
                     yRPs.append(yRad)
-                    channels.append(channel)
 
-                    # Save the Radial Profile Data into a csv
-                    radPath = roiPath / Path("Radial" + "_" + channel + ".csv")
-                    with open(radPath, "w") as f:
-                        for xVal, yVal in zip(xRad,yRad):
-                            print(str(xVal) + "," + str(yVal), file = f)
 
+                xRad = np.asarray([ind * self.pixelSize for ind in range(len(yRPs[0]))])
+
+                radPath = roiPath / Path("Radial.csv")
+                with open(radPath, "w") as f:
+                    print("Distance [" + self.unit + "]", file=f, end = "")
+                    for channel in self.selectedChannels:
+                        print("," + channel, file=f, end = "")
+                    print(file=f)
+
+                    for xIndex in range(len(xRad)):
+                        print(xRad[xIndex], file=f, end ="")
+                        for currChannel in range(len(yRPs)):
+                            print("," + str(yRPs[currChannel][xIndex]), file=f, end = "")
+                        print(file=f)
+                    
+            
                 plotPath = roiPath / Path("RadialPlot.png")
-                self.simplePlot(xRPs, yRPs, channels, plotPath)
+                self.simplePlot(xRad, yRPs, self.selectedChannels, plotPath)
 
                 with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
-                    print("{},{},{},{},{},{},{},{}".format("ROI_" + str(index), 
+                    print("{},{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                         str(newX),
                                                         str(newY),
                                                         str(oldX),
                                                         str(oldY),
                                                         str(radPath),
-                                                        str(plotPath),
-                                                        str(imgPath)),
+                                                        str(plotPath)),
                                                         file=f)
-
-    '''
-    def analyzeProfiles(self,outputPath, fraction):
-        """
-        Implement the analysis protocol implemented utilized in:
-            Article Source: Reversible association with motor proteins (RAMP): A streptavidin-based method to manipulate organelle positioning
-            Guardia CM, De Pace R, Sen A, Saric A, Jarnik M, et al. (2019) Reversible association with motor proteins (RAMP): A streptavidin-based 
-            method to manipulate organelle positioning. PLOS Biology 17(5): e3000279. 
-            https://doi.org/10.1371/journal.pbio.3000279 
-
-            1) Normalizes radius values (X-Values) between 0 and 1
-            2) Finds the minimum distance that contains x (fraction specified by the user) of the total intesity
-            3) Saves the radius within the ROI folder
-            4) Calculates the average radius holding x of the total intensity for the entire sample.
-
-        Input:
-            - outputPath -> A specified path to write data to
-            - fraction -> A specified float f (0.00 < f <= 1.00)
-
-        Output:
-            - scene_MasterTable.csv -> Output table that combines the original scene_Table.csv with analysis specific columns.
-            - RadialNormalized.csv -> Normalized (x values) Radial Profile data
-            - RadialPlotNormalized.png -> Normalized Radial Plot
-        """
-
-        outputPath = Path(outputPath)
-        
-        # List of scene average radii for each scene self.scenes
-        sceneMeans = []
-
-        # Go back over all of the scenes from the current run of the program and run the analysis protocol.
-        for scene in self.scenes:
-
-            scene = scene.replace(":","_").replace("/","_")
-            scenePath = outputPath / Path("RadialProfiles/" + scene)
-
-            minRads = []
-
-            with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
-                print("ROI,Fraction,MinimumRadius,RadialNormalizedPath,RadialPlotNormalizedPath", file=f)
-            
-            # Each ROI in the scene
-            for roi in scenePath.iterdir():
-                # Make sure roi is not a .csv file that could be residing in the directory.
-                if roi.is_dir():
-                
-                    # Read in the previously generated Radial Profile
-                    radialProfile = np.loadtxt(roi / Path("Radial.csv"),delimiter=",")
-
-                    yValues = radialProfile[:,1]
-                    xValues = radialProfile[:,0]
-
-                    # Normalize X values between 0 and 1
-                    normalizedX = xValues / np.max(xValues)
-
-                    # Write out the normalized radial profile data
-                    normPath = roi / Path("RadialNormalized.csv")
-                    with open(normPath, "w") as f:
-                        for x,y in zip(normalizedX, yValues):
-                            print(str(x) + "," + str(y),file=f)
-
-                    # Save the plot of the normalized data
-                    plotNorm = roi / Path("RadialPlotNormalized.png")
-                    self.simplePlot(normalizedX, yValues, plotNorm)
-
-                    # Create array of cumulative intensities and look for the X that contains the fractional intensity.
-                    cumulIntensity = np.cumsum(yValues)
-                    # np.argmax will return the index of the first value that exceed the fractional intensity desired.
-                    fracMinIndex = np.argmax(cumulIntensity >= (np.sum(yValues) * fraction))
-                    # Index into normalized values to get minimum radius holding fraction f of the intensity.
-                    xFractionalMin = normalizedX[fracMinIndex]
-                    minRads.append(xFractionalMin)
-
-                    # Write out the AnalysisTable
-                    radPath = roi / Path("FractionalRadius.csv")
-                    with open(scenePath / Path(scene + "_AnalysisTable.csv"), "a") as f:
-                        print("{},{},{},{},{}".format(roi.name,
-                                                        str(fraction),
-                                                        str(xFractionalMin),
-                                                        str(normPath),
-                                                        str(radPath)), 
-                                                        file=f)
-                
-                # Skip files that aren't directories
-                else:
-                    continue
-            
-            # Read in original table and new analysis table and combine the two, and write it out
-            originalTable = pd.read_csv(scenePath / Path(scene +"_Table.csv"),index_col="ROI")
-            analysisTable = pd.read_csv(scenePath / Path(scene + "_AnalysisTable.csv"),index_col="ROI")
-            newTable = originalTable.join(analysisTable)
-            newTable.to_csv(scenePath / Path(scene + "_MasterTable.csv"))
-
-            # Try to remove the 2 old tables
-            try:
-                os.remove(scenePath / Path(scene + "_Table.csv"))
-                os.remove(scenePath / Path(scene + "_AnalysisTable.csv"))
-            except:
-                pass
-            
-            # Calculate the mean minimum radius for the whole scene
-            minRads = np.array(minRads)
-            minMean = np.mean(minRads)
-            sceneMeans.append(minMean)
-        
-        for scene,mean in zip(self.scenes,sceneMeans):
-            with open(outputPath / Path("RadialProfiles/SceneMeanMinRads.txt"), "a") as f:
-                print(scene, ":", str(mean), file=f)
-    '''
