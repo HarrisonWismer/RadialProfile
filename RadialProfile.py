@@ -74,14 +74,15 @@ class RadialProfiler:
         outputPath = outputPath / Path("RadialProfiles")
         self.checkPath(outputPath)
 
-        # The supplied .lif file has multiple scenes, each corresponding to different conditions.
+        # Iterate through the selected scenes/samples
         for scene in self.scenes:
             
+            # Using the friendly scene name, get the original scene name from the AICSImage object.
             origScene = self.sceneDict[scene]
-            index = self.image.scenes.index(origScene)
+            ind = self.image.scenes.index(origScene)
             sceneName = scene.replace(":","_").replace("/","_")
 
-            self.image.set_scene(index)
+            self.image.set_scene(ind)
             
             # Set appropriate channel colors and layer labels
             labels = self.channels
@@ -173,7 +174,6 @@ class RadialProfiler:
                 if xmin > x: xmin = x
                 if xmax > x: xmax = x
                 if xmax < 0: xmax = 0
-
                 if ymin < 0: ymin = 0
                 if ymin > y: ymin = y
                 if ymax > y: ymax = y
@@ -212,7 +212,7 @@ class RadialProfiler:
                     yRad = np.asarray(rp[:int(radius)])
                     yRPs.append(yRad)
 
-
+                # Adjust x (Distance) values using specified pixel size
                 xRad = np.asarray([ind * self.pixelSize for ind in range(len(yRPs[0]))])
 
                 radPath = roiPath / Path("Radial.csv")
