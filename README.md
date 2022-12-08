@@ -33,7 +33,7 @@ This will bring up the GUI through which all necessary interaction with the prog
 2. Specify an output directory.
 3. Use the mouse to select which samples will be run through the program.
 4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
-5. Specify whether downstream analysis is to be run. Set associated values accordingly.
+5. Verify Pixel Scales & Units and set values manually if needed.
 6. Click Run
 
 ## Interaction:
@@ -45,19 +45,19 @@ The general workflow is as follows:
 
 2. Use any channel as a guide to:
 
-	A) Draw an ROI Using the shapes layer named "ROIs" which can be found on the left. The polygon selection will be the most accurate.
+	A) Draw an ROI Using the shapes layer named "ROIs" which can be found on the left. Using the polygon shape tool is encouraged.
 
 	B) Place a Center Point using the points layer named "Centers" which can be found on the left. Place this where you want the center of the Radial Profile circle to be.
 	   Note that this center point does not need to be placed in the center of the ROI defined.
 
-	**IMPORTANT: ROI's and Center Points must be created in the same order to be properly registed with each other. It is recommend to draw 1 ROI and then 
-	immediately place its center point. A less feasible but still valid approach would be to draw all ROIs and then place all center points in the SAME ORDER the ROIs were added. 
-	What CANNOT be done is creating ROI_1, create ROI_2, place ROI_2's center point and then place ROI_1's center point. This will associate ROI_2 with ROI_1's 
+	**IMPORTANT: ROI's and Center Points must be created in the same order to be properly associated with each other. It is recommend to draw 1 ROI and then 
+	immediately place its center point or vice versa. A less feasible but still valid approach would be to draw all ROIs and then place all center points in the SAME ORDER the ROIs were added. 
+	What CANNOT be done is to create ROI_1, create ROI_2, place ROI_2's center point and then place ROI_1's center point. This will associate ROI_2 with ROI_1's 
 	center point and vice versa.**
 
 3. Repeat step 2 for all desired ROI's.
 
-4. When done, close down the Napari Viewer by clicking the X in the top right corner. The Viewer may re-open with the same scene and same ROIs, in which case the number of ROI's is not the same as the number of center points placed. In this case it may be easier to delete all ROIs and points to make sure that each ROI is correctly associated with each point. If the number of ROIs matches the number of center points, a new viewer displaying the next scene will pop up. Repeat steps 1-3 for each scene until no new Viewer pops up.
+4. When done, close down the Napari Viewer by clicking the X in the top right corner. The Viewer may re-open with the same scene and same ROIs, in which case the number of ROI's is not the same as the number of center points placed. If the circle shape was used to define a boundary, it is likely it will be changed into a rectangle during this process, which is why it is encouraged to use the polygon shape tool instead. In this case it may be easier to delete all ROIs and points to make sure that each ROI is correctly associated with each point. If the number of ROIs matches the number of center points, a new viewer displaying the next scene will pop up. Repeat steps 1-3 for each scene until no new Viewer pops up.
 
 5. View the specified output folder to see the results.
 
@@ -65,50 +65,27 @@ The general workflow is as follows:
 
 Once the steps above are complete there should be a new folder called RadialProfiles present at the specified output path.
 
-Note that the files present will differ slightly depending on whether or not the downstream analysis was run. Any difference will be noted below with **DS** tag.
-The organization is as follows:
-
-RadialProfiles (folder) -> Folder For Each Sample -> Folder For Each ROI Within Sample
+RadialProfiles (folder) -> Folder For Each Sample/Scene -> Folder For Each ROI Within Sample
 
 The RadialProfiles folder contains:
 - A folder for each scene
-- **DS:** SceneMeanMinRads.txt -> A file containing the mean minimum radius which contains the specified fraction of the total intensity for each scene/sample.
 
-Each Sample folder contains:
+Each Sample/Scene folder contains:
 - A folder for each ROI
-- sceneName_table.csv -> A CSV file with a row for each ROI in the scene/sample with the following columns/attributes:
+- sceneName_Table.csv -> A CSV file with a row for each ROI in the scene/sample with the following columns/attributes:
 	- The ROI Number
-	- The relative X coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
 	- The relative Y coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
-	- The absolute X coordinate of the radial centerpoint (In terms of the original image)
+	- The relative X coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
 	- The absolute Y coordinate of the radial centerpoint (In terms of the original image)
-	- The path to the Radial.csv file which contains the (x,y) pairs generated from the radial profile analysis
+	- The absolute X coordinate of the radial centerpoint (In terms of the original image)
+	- The path to the Radial.csv file which contains the radial profile values for each specified channel for each ROI.
 	- The path to the radial profile plot
-	- The path to the ROI TIFF image file
-
-- **DS:** sceneName_table.csv will be **replaced** by **SceneName_MasterTable.csv** a CSV file containing a row for each ROI with the following columns/attributes:
-	- All of the afformentioned fields contained in sceneName_table.csv
-	- The Fraction specified by the user
-	- The Minimum Radius containing the specified fraction of the total intensity for each ROI
-	- RadialNormalizedPath -> Contains the paht to the radial profile data where x values have been normalized per the protocol (see below)
-	- RadialPlotNormalizedPath.csv -> Contains the path to the plot of the normalized radial profile data
 
 Each ROI folder contains:
-- ROI_n.tiff -> Cropped ROI region saved in a .tiff file for the nth ROI defined
+- ROI_n_Channel_m.tiff -> Cropped ROI region saved in a .tiff file for the nth ROI defined and the mnth channel specified.
 - RadialPlot.png -> A basic plot of the radial profile
-- Radial.csv -> The resulting data from the radial profile analysis containing (x,y) pairs. (Can be read into numpy with the np.loadtxt() function)
-
-- **DS:**
-	- RadialNormalized.csv -> (x,y) pairs resulting from the radial profile analysis in which x values (distances) have been normalized per the protocol (see below)
-	- RadialPlotNormalized.png -> Plot of normalized radial profile
+- Radial.csv -> The resulting data from the radial profile analysis with x values in the Distance column and y values in the channel_n column.
 
 - **Note:**
-	- Both Radial.csv and RadialNormalized.csv can be read into an array easily with numpy using np.loadtxt(path, delimiter=",")
-	- Any of the CSV tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
-
-## Optional Analysis (Work In Progress):
-Currently, an analysis method inspired by the RAMP protocol as described in [Guardia et al. 2019](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000279#sec002) is implemented with the following steps:
-
-1. Given the Radial Profile plot distribution calculated for each ROI, normalize the distances (X-Values) using the largest circle present. This effectively normalizes all distance values to be between 0 and 1.
-2. Define a fraction f (0.00 < f <= 1.00). The analysis procedure finds the minimum radius size that incorporates fraction f of the total itensity.
-3. 
+	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv", index_col = "Distance [Units]")
+	- The master scene tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
