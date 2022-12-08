@@ -2,7 +2,7 @@
 
 Radial Profiling of User-Defined ROIs Using Napari.
 
-Radial Profile analysis is extremely useful to measure the intensity around a specified point as a function of distance. The basic idea is that a
+Radial Profile analysis measures the intensity around a specified point as a function of distance. The basic idea is that a
 center point and radius are specified, and pixel intensity values within each ring (at each radius value) around the center are added up and divided by the total number of pixels in that ring. This is done at each radius value up until the specified radius.
 
 This script in particular, aims to make performing this type of radial profile analysis easier and faster. All that needs to be done is to manually draw ROIs with their center points. The smallest possible bounding box is then fit around the drawn ROI with pixels within the bounding box but outside of the ROI blacked out. The radial profile is then taken, with radius values increasing until reaching the edge of the image.
