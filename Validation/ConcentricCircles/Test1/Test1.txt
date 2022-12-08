@@ -1,10 +1,4 @@
 Test 1:
-
-	Fiji:
-		Center Point: (550,510)
-		Radius: 500 Pixels
-	
-	Radial Profile Plugin:
-		Center Point: (550,510)
-		Radius: 500 Pixels
-		ROI: Napari Circular Shape
+		
+Center Point: (550,510)
+Radius: 500 Pixels

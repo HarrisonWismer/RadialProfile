@@ -1,8 +1,4 @@
 Test 2:
-    Fiji:
-        Center Point: 285, 400
-        Radius: 350
 
-    Radial Profile Plugin:
-        Center Point: 285, 400
-        Radius: 350
+Center Point: 285, 400
+Radius: 350
