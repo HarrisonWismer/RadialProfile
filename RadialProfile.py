@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import os
 from pathlib import Path
 import tifffile
-import pandas as pd
 import diplib as dip
 
 class RadialProfiler:
