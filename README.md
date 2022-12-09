@@ -92,5 +92,5 @@ Each ROI folder contains:
 - Radial.csv -> The resulting data from the radial profile analysis with x values in the Distance column and y values in the channel_n column.
 
 - **Note:**
-	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv", index_col = "Distance [Units]")
+	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv", index_col = "Distance [Units]"). After doing this the plots can be easily recreated by calling .plot() on the dataframe.
 	- The master scene tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
