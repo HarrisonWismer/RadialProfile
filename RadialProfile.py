@@ -161,7 +161,13 @@ class RadialProfiler:
 
             # Add ROI checks
             for index in range(len(view.layers["Centers"].data)):
-
+                
+                # ROIs can be drawn incorrectly:
+                #   - Center point outside of image
+                #   - ROI fully outside of image
+                #   - Combinations of both
+                # Use this try, except to ignore incorrect ROIs
+                
                 try:
                     # Get current info
                     currCenter = view.layers["Centers"].data[index]
