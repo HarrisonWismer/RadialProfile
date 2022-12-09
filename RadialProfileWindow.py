@@ -37,6 +37,9 @@ class MainWindow(QMainWindow):
         self.outputBrowse.clicked.connect(self.browseOutputFiles)
         self.selectAllSamples.clicked.connect(self.selectAllScenes)
         self.clearAllSamples.clicked.connect(self.clearAllScenes)
+        self.selectAllChannels.clicked.connect(self.selectChannels)
+        self.clearAllChannels.clicked.connect(self.clearChannels)
+
         self.sampleList.itemSelectionChanged.connect(self.loadUpScenes)
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
         self.xyScale.valueChanged.connect(self.setPixelSize)
@@ -109,6 +112,12 @@ class MainWindow(QMainWindow):
         Deselect/clear all scenes/samples from QListWidget.
         """
         self.sampleList.clearSelection()
+
+    def selectChannels(self):
+        self.channelList.selectAll()
+
+    def clearChannels(self):
+        self.channelList.clearSelection()
 
     def loadUpScenes(self):
         """
