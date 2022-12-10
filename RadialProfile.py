@@ -103,7 +103,7 @@ class RadialProfiler:
                             channel_axis=1, 
                             name=labels,
                             colormap=colormaps)
-                
+                            
                 # Create the roiLayer (either with pre-existing or no data)
                 if roiLayer == None:
                     roiLayer = view.add_shapes(name="ROIs")
