@@ -62,9 +62,12 @@ The general workflow is as follows:
 
 3. Repeat step 2 for all desired ROI's.
 
-4. When done, close down the Napari Viewer by clicking the X in the top right corner. The Viewer may re-open with the same scene and same ROIs, in which case the number of ROI's is not the same as the number of center points placed. If the circle shape was used to define a boundary, it is likely it will be changed into a rectangle during this process, which is why it is encouraged to use the polygon shape tool instead. In this case it may be easier to delete all ROIs and points to make sure that each ROI is correctly associated with each point. If the number of ROIs matches the number of center points, a new viewer displaying the next scene will pop up. Repeat steps 1-3 for each scene until no new Viewer pops up.
+4. When done, close down the Napari Viewer by clicking the X in the top right corner. The Viewer may re-open with the same scene and same ROIs, in which case the number of ROI's is not the same as the number of center points placed. In this case it may be easier to delete all ROIs and points to make sure that each ROI is correctly associated with each point. If the number of ROIs matches the number of center points, a new viewer displaying the next scene will pop up. Repeat steps 1-3 for each scene until no new Viewer pops up.
 
 5. View the specified output folder to see the results.
+
+- **Note:**
+	- Currently, the plugin does not know if it has already been run on a certain image. If you missed some ROIs in a certain pass of the program, if you re-run usign the same output folder, the previous results will be overwritten. It is advised to try to run all in one go, or change output folder, manually change ROI numbers, and consolidate manually if needed.
 
 ## Output:
 
