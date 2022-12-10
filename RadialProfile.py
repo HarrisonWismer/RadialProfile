@@ -93,6 +93,7 @@ class RadialProfiler:
             # is closed in the case that the # points != # ROIs.
             roiLayer = None
             centerLayer = None
+            shapeTypes = None
 
             while dimMatch == False:
 
@@ -103,26 +104,13 @@ class RadialProfiler:
                             name=labels,
                             colormap=colormaps)
                 
-
                 # Create the roiLayer (either with pre-existing or no data)
                 if roiLayer == None:
                     roiLayer = view.add_shapes(name="ROIs")
+
                 else:
                     if len(roiLayer.data) != 0:
-
-                        # Try adding each type of shape to avoid type errors
-                        try:
-                            roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type="ellipse")
-                        except:
-                            try:
-                                roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type="polygon")
-                            except:
-                                try:
-                                    roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type="rectangle")
-                                except:
-                                    print("WARNING: UNABLE TO CREATE ADD SHAPES (Use only Polygon, Ellipse, Rectangle")
-                                    pass
-
+                        roiLayer = view.add_shapes(roiLayer.data, name="ROIs", shape_type=shapeTypes)
                     else:
                         roiLayer = view.add_shapes(name="ROIs")
 
@@ -136,12 +124,15 @@ class RadialProfiler:
                 # When the viewer is closed, the rest of the code will run.
                 view.show(block=True)
 
+                shapeTypes = view.layers["ROIs"].shape_type
+
                 # If the # Centers == # ROIs, clear pevious data (moves on to next slide)
                 # Else the viewer will re-open with previous data.
                 if len(centerLayer.data) == len(roiLayer.data):
                     dimMatch = True
-                    roiLayer = False
-                    centerLayer = False
+                    roiLayer = None
+                    centerLayer = None
+                    shapeTypes = None
 
             # This grabs the (Y X X) image size into variables x and y
             y, x = view.layers[0].data.shape[2:]
