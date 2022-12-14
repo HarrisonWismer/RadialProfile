@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         self.selectedChannels = None
         self.pixelSize = None
         self.unit = None
+        self.reload = False
 
         # Click Events for UI
         self.loadBrowse.clicked.connect(self.browseInputFiles)
@@ -43,6 +44,7 @@ class MainWindow(QMainWindow):
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
         self.xyScale.valueChanged.connect(self.setPixelSize)
         self.unitLabel.textChanged.connect(self.setUnit)
+        self.reloadROI.stateChanged.connect(self.reloadROIs)
         self.runButton.clicked.connect(self.createRadialProfile)
 
 
@@ -133,6 +135,9 @@ class MainWindow(QMainWindow):
         except:
             pass
 
+    def reloadROIs(self):
+        self.reload = not self.reload
+
     def createRadialProfile(self):
         """
         This should be the final step in the GUI procedure. If any of the attributes are None, the RadialProfiler
@@ -152,7 +157,8 @@ class MainWindow(QMainWindow):
                                         self.channels, 
                                         self.selectedChannels, 
                                         self.pixelSize, 
-                                        self.unit)
+                                        self.unit,
+                                        self.reload)
             self.rp.executeScript(Path(self.outputLine.text()))
             self.rp = None
 

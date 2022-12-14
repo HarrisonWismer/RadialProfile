@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import tifffile
 import diplib as dip
+import pandas as pd
 
 class RadialProfiler:
     """
@@ -16,7 +17,7 @@ class RadialProfiler:
         - selectedChannel -> The name of the channel from which intensity values will be taken.
     """
 
-    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit):
+    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload):
         self.image = image
         self.scenes = scenes
         self.sceneDict = sceneDict
@@ -24,6 +25,7 @@ class RadialProfiler:
         self.selectedChannels = sorted(selectedChannels)
         self.pixelSize = pixelSize
         self.unit = unit
+        self.reload = reload
 
     def simplePlot(self, x, y, channels, path):
         """
@@ -52,6 +54,9 @@ class RadialProfiler:
         '''
         if not os.path.exists(path):
             os.makedirs(path)
+            return False
+        else:
+            return True
 
     def executeScript(self, outputPath):
         """
@@ -86,7 +91,7 @@ class RadialProfiler:
             # Set appropriate channel colors and layer labels
             labels = self.channels
             colormaps = ["blue" , "red", "green"] + ["gray" for i in range(self.image.data.shape[1])]
-            
+
             # In Case the # Of Points != # ROIs
             dimMatch = False
             # Stores previous iterations ROI and center information to be added back to re-opened viewer after it
@@ -94,6 +99,30 @@ class RadialProfiler:
             roiLayer = None
             centerLayer = None
             shapeTypes = None
+
+            # Try to reload the ROIs from the previous iteration if specified by the user.
+            if self.reload:
+                try:
+                    rois,centers,shapes = [],[],[]
+
+                    # Read in all necessary info from previous master table
+                    masterTable = pd.read_csv(outputPath / Path(scene) / Path(scene + "_Table.csv"))
+
+                    # Append necessary info to lists to be added to viewer
+                    for centerY,centerX,coords,shape in zip(masterTable["AbsoluteCenterY"],masterTable["AbsoluteCenterX"],masterTable["Coordinates"],masterTable["Shape"]):
+                        rois.append(np.loadtxt(coords,delimiter=","))
+                        centers.append((int(centerX),int(centerY)))
+                        shapes.append(shape)
+                    
+                    # Don't alter dimMatch so that the while loop will still be entered, but populate layers to be added in
+                    tempViewer = napari.Viewer(show=False)
+                    roiLayer = tempViewer.add_shapes(rois, name="ROIs", shape_type=shapes)
+                    centerLayer = tempViewer.add_points(centers, name="ROIs")
+                    shapeTypes = shapes
+
+                except Exception as e:
+                    print("No Previous ROIs Found")
+                    
 
             while dimMatch == False:
 
@@ -147,7 +176,7 @@ class RadialProfiler:
             scenePath = outputPath / sceneName
             self.checkPath(scenePath)
             with open(scenePath / Path(sceneName + "_Table.csv"), "w") as f:
-                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,RadialPath,RadialPlotPath", file=f)
+                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,RadialPath,RadialPlotPath,Coordinates,Shape", file=f)
 
             # Add ROI checks
             for index in range(len(view.layers["Centers"].data)):
@@ -177,6 +206,13 @@ class RadialProfiler:
                     if ymax > y: ymax = y
                     if ymax < 0: ymax = 0
 
+                    roiPath = scenePath / Path("ROI_" + str(index))
+                    self.checkPath(roiPath)
+
+                    # Save the ROI Coordinates and shape type
+                    coordPath = roiPath / Path("ROI_" + str(index) + "_Coordinates.csv")
+                    np.savetxt(coordPath, currRoi, delimiter=",")
+                    roiShape = view.layers["ROIs"].shape_type[index]
 
                     # List of lists to hold each set of intensity values from each channel
                     yRPs = []
@@ -190,8 +226,8 @@ class RadialProfiler:
                         cropped = view.layers["ROI_" + str(index) + channel].data[0][currZ][ymin:ymax,xmin:xmax]
 
                         # Save cropped ROI image
-                        roiPath = scenePath / Path("ROI_" + str(index))
-                        self.checkPath(roiPath)
+                        #roiPath = scenePath / Path("ROI_" + str(index))
+                        #self.checkPath(roiPath)
                         imgPath = roiPath / Path("ROI_" + str(index) + "_" + channel + ".tiff")
                         tifffile.imwrite(imgPath  , cropped)
 
@@ -231,13 +267,15 @@ class RadialProfiler:
                     self.simplePlot(xRad, yRPs, self.selectedChannels, plotPath)
 
                     with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
-                        print("{},{},{},{},{},{},{}".format("ROI_" + str(index), 
+                        print("{},{},{},{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                             str(newX),
                                                             str(newY),
                                                             str(oldX),
                                                             str(oldY),
                                                             str(radPath),
-                                                            str(plotPath)),
+                                                            str(plotPath),
+                                                            str(coordPath),
+                                                            str(roiShape)),
                                                             file=f)
                 except Exception as e:
                     print()
