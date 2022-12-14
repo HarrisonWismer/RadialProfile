@@ -41,7 +41,8 @@ NOTE: When specifying an output directory, a folder called RadialProfiles is cre
 3. Use the mouse to select which samples will be run through the program.
 4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
 5. Verify Pixel Scales & Units and set values manually if needed.
-6. Click Run
+6. If using the same output directory used in a previous run, decide if ROIs should be reloaded for scenes already run.
+7. Click Run
 
 ## Interaction:
 Upon successfully running the program through the GUI, a Napari Viewer with the first scene contained in the .LIF file should appear.
@@ -88,8 +89,11 @@ Each Sample/Scene folder contains:
 	- The relative X coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
 	- The absolute Y coordinate of the radial centerpoint (In terms of the original image)
 	- The absolute X coordinate of the radial centerpoint (In terms of the original image)
-	- The path to the Radial.csv file which contains the radial profile values for each specified channel for each ROI.
+	- The path to the Radial.csv file which contains the radial profile values for each specified channel for each ROI
 	- The path to the radial profile plot
+	- The path to the ROI_n_Coordinates.csv file with coordinate points to reload each ROI
+	- The type of shape for the ROI to be used when loading ROIs back in
+
 
 Each ROI folder contains:
 - ROI_n_Channel_m.tiff -> Cropped ROI region saved in a .tiff file for the nth ROI defined and the mnth channel specified.
