@@ -101,6 +101,7 @@ Each ROI folder contains:
 - ROI_n_Channel_m.tiff -> Cropped ROI region saved in a .tiff file for the nth ROI defined and the mnth channel specified.
 - RadialPlot.png -> A basic plot of the radial profile
 - Radial.csv -> The resulting data from the radial profile analysis with x values in the Distance column and y values in the channel_n column.
+- ROI_n_Coordinates.csv -> The coordinates of the ROI itself. Used to reload in previous ROIs.
 
 - **Note:**
 	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv", index_col = "Distance [Units]"). After doing this the plots can be easily recreated by calling .plot() on the dataframe.
