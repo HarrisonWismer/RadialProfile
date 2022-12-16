@@ -104,5 +104,5 @@ Each ROI folder contains:
 - ROI_n_Coordinates.csv -> The coordinates of the ROI itself. Used to reload in previous ROIs.
 
 - **Note:**
-	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv", index_col = "Distance [Units]"). After doing this the plots can be easily recreated by calling .plot() on the dataframe.
-	- The master scene tables can be read in with pandas using pd.read_csv(path, index_col="ROI")
+	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv"). After doing this the plots can be easily recreated by calling .plot() on the dataframe.
+	- The master scene tables can be read in with pandas using pd.read_csv(path)
