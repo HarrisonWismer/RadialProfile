@@ -149,7 +149,7 @@ class MainWindow(QMainWindow):
         if (self.image is not None and self.scenes is not None and 
             self.channels is not None and self.selectedChannels is not None and 
             self.sceneDict is not None and self.pixelSize is not None 
-            and self.unit is not None):
+            and self.unit is not None and len(self.selectedChannels) != 0):
 
             self.rp = rp.RadialProfiler(self.image, 
                                         self.scenes, 

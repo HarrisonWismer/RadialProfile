@@ -7,6 +7,8 @@ center point and radius are specified, and pixel intensity values within each ri
 
 This script in particular, aims to make performing this type of radial profile analysis easier and faster. All that needs to be done is to manually draw ROIs with their center points. The smallest possible bounding box is then fit around the drawn ROI with pixels within the bounding box but outside of the ROI blacked out. The radial profile is then taken, with radius values increasing until reaching the edge of the image.
 
+This plugin was inspired by the ImageJ [Radial Profile Plugin](https://imagej.nih.gov/ij/plugins/radial-profile.html) and [Radial Profile Extended Plugin](https://imagej.nih.gov/ij/plugins/radial-profile-ext.html). This plugin aims to perform the same kind of analysis as these plugins while also being easier to use when profiling multiple/many regions of interest.
+
 ## Dependencies:
 There is a provided Conda Environment file camed rpEnv.yml that can be used to create a Conda environment with all dependencies already installed.
 
@@ -45,7 +47,7 @@ NOTE: When specifying an output directory, a folder called RadialProfiles is cre
 7. Click Run
 
 ## Interaction:
-Upon successfully running the program through the GUI, a Napari Viewer with the first scene contained in the .LIF file should appear.
+Upon successfully running the program through the GUI, a Napari Viewer with the first scene contained in the image file should appear.
 
 The general workflow is as follows:
 

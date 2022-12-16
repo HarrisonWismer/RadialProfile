@@ -181,7 +181,7 @@
          </font>
         </property>
         <property name="text">
-         <string>4. Select Channel For Intensity Measurements</string>
+         <string>4. Select Channels To Measure Intensity</string>
         </property>
        </widget>
       </item>
