@@ -75,7 +75,7 @@ class RadialProfiler:
                         - RadialPlot.png -> An image of the plotted Radial Profile.
         """
 
-        outputPath = outputPath / Path("RadialProfiles")
+        outputPath = outputPath #/ Path("RadialProfiles")
         self.checkPath(outputPath)
 
         # Iterate through the selected scenes/samples
