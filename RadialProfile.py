@@ -103,14 +103,16 @@ class RadialProfiler:
             # Try to reload the ROIs from the previous iteration if specified by the user.
             if self.reload:
                 try:
+                    print(str(outputPath / Path(scene) / Path(scene + "_Table.csv")))
                     rois,centers,shapes = [],[],[]
 
                     # Read in all necessary info from previous master table
-                    masterTable = pd.read_csv(outputPath / Path(scene) / Path(scene + "_Table.csv"))
+                    scenePath = outputPath / Path(scene)
+                    masterTable = pd.read_csv(scenePath / Path(scene + "_Table.csv"))
 
                     # Append necessary info to lists to be added to viewer
-                    for centerY,centerX,coords,shape in zip(masterTable["AbsoluteCenterY"],masterTable["AbsoluteCenterX"],masterTable["Coordinates"],masterTable["Shape"]):
-                        rois.append(np.loadtxt(coords,delimiter=","))
+                    for centerY,centerX,roi,shape in zip(masterTable["AbsoluteCenterY"],masterTable["AbsoluteCenterX"],masterTable["ROI"],masterTable["Shape"]):
+                        rois.append( np.loadtxt(scenePath/Path(roi)/Path(roi + "_Coordinates.csv") , delimiter=","))
                         centers.append((int(centerX),int(centerY)))
                         shapes.append(shape)
                     
@@ -176,7 +178,7 @@ class RadialProfiler:
             scenePath = outputPath / sceneName
             self.checkPath(scenePath)
             with open(scenePath / Path(sceneName + "_Table.csv"), "w") as f:
-                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,RadialPath,RadialPlotPath,Coordinates,Shape", file=f)
+                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,Shape", file=f)
 
             # Add ROI checks
             for index in range(len(view.layers["Centers"].data)):
@@ -267,14 +269,11 @@ class RadialProfiler:
                     self.simplePlot(xRad, yRPs, self.selectedChannels, plotPath)
 
                     with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
-                        print("{},{},{},{},{},{},{},{},{}".format("ROI_" + str(index), 
+                        print("{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                             str(newX),
                                                             str(newY),
                                                             str(oldX),
                                                             str(oldY),
-                                                            str(radPath),
-                                                            str(plotPath),
-                                                            str(coordPath),
                                                             str(roiShape)),
                                                             file=f)
                 except Exception as e:
