@@ -36,10 +36,10 @@ Ex: >$ python RunRadialProfile.py
 
 This will bring up the GUI through which all necessary interaction with the program can be done Once in the GUI complete each step in the orders shown.
 
-NOTE: When specifying an output directory, a folder called RadialProfiles is created. IF re-running the plugin, currently if the same scene/sample is run again and the same output directory specified, contents will be OVERWRITTEN. However, if using the same output directory and running the plugin on a new scene/sample, a new folder for that sample will be created.
+NOTE: fF re-running the plugin, currently if the same scene/sample is run again and the same output directory specified, contents will be OVERWRITTEN. However, if using the same output directory and running the plugin on a new scene/sample, a new folder for that sample will be created.
 
 1. Specify an input file.
-2. Specify an output directory. 
+2. Specify an output directory. If re-running the same samples in the same output directory, you may choose to reload previously used ROIs.
 3. Use the mouse to select which samples will be run through the program.
 4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
 5. Verify Pixel Scales & Units and set values manually if needed.
@@ -76,11 +76,8 @@ The general workflow is as follows:
 
 ## Output:
 
-Once the steps above are complete there should be a new folder called RadialProfiles present at the specified output path.
+The output directory specified will contain:
 
-RadialProfiles (folder) -> Folder For Each Sample/Scene -> Folder For Each ROI Within Sample
-
-The RadialProfiles folder contains:
 - A folder for each scene
 
 Each Sample/Scene folder contains:
