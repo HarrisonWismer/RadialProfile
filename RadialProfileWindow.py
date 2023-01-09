@@ -162,8 +162,7 @@ class MainWindow(QMainWindow):
             self.channels is not None and self.selectedChannels is not None and 
             self.sceneDict is not None and self.pixelSize is not None 
             and self.unit is not None and len(self.selectedChannels) != 0):
-
-            print(self.doBackgroundSubtract)
+            
             self.rp = rp.RadialProfiler(self.image, 
                                         self.scenes, 
                                         self.sceneDict, 

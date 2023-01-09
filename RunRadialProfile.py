@@ -10,8 +10,6 @@ def main():
     mainWindow = rpw.MainWindow()
     widget=QtWidgets.QStackedWidget()
     widget.addWidget(mainWindow)
-    widget.setFixedWidth(530)
-    widget.setFixedHeight(450)
     widget.show()
 
     sys.exit(rpApplication.exec())

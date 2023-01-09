@@ -18,75 +18,57 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="2" column="1" colspan="3">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>1. Input File:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inputLine"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="loadBrowse">
-        <property name="text">
-         <string>Browse</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="5" column="0">
-     <spacer name="verticalSpacer_2">
+    <item row="6" column="1">
+     <spacer name="horizontalSpacer_2">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>40</height>
+        <width>40</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="5" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout">
+    <item row="5" column="3">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="channelLabel">
         <property name="font">
          <font>
-          <pointsize>13</pointsize>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>3. Select Samples</string>
+         <string>4. Select Channels To Measure Intensity</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="sampleList">
+       <widget class="QListWidget" name="channelList">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::MultiSelection</enum>
         </property>
+        <property name="selectionRectVisible">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="selectAllSamples">
+       <widget class="QPushButton" name="selectAllChannels">
         <property name="text">
          <string>Select All</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="clearAllSamples">
+       <widget class="QPushButton" name="clearAllChannels">
         <property name="text">
          <string>Clear All</string>
         </property>
@@ -94,8 +76,33 @@
       </item>
      </layout>
     </item>
-    <item row="5" column="2">
-     <spacer name="verticalSpacer">
+    <item row="4" column="1">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_5">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Radial Profile Script</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="4">
+     <spacer name="verticalSpacer_4">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -106,6 +113,45 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>2. Output File:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="outputLine"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="outputBrowse">
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item row="7" column="1">
      <layout class="QGridLayout" name="gridLayout">
@@ -185,72 +231,45 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="1" colspan="3">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item row="5" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label">
         <property name="font">
          <font>
           <pointsize>13</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>2. Output File:</string>
+         <string>3. Select Samples</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="outputLine"/>
+       <widget class="QListWidget" name="sampleList">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+       </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="outputBrowse">
+       <widget class="QPushButton" name="selectAllSamples">
         <property name="text">
-         <string>Browse</string>
+         <string>Select All</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="clearAllSamples">
+        <property name="text">
+         <string>Clear All</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="4" column="1">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="1">
-     <spacer name="horizontalSpacer_4">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label_5">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Radial Profile Script</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="4">
-     <spacer name="verticalSpacer_4">
+    <item row="5" column="2">
+     <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -262,73 +281,47 @@
       </property>
      </spacer>
     </item>
-    <item row="6" column="1">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="5" column="3">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item row="2" column="1" colspan="3">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="channelLabel">
+       <widget class="QLabel" name="label_2">
         <property name="font">
          <font>
-          <pointsize>10</pointsize>
+          <pointsize>13</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>4. Select Channels To Measure Intensity</string>
+         <string>1. Input File:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="channelList">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::MultiSelection</enum>
-        </property>
-        <property name="selectionRectVisible">
-         <bool>false</bool>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="inputLine"/>
       </item>
       <item>
-       <widget class="QPushButton" name="selectAllChannels">
+       <widget class="QPushButton" name="loadBrowse">
         <property name="text">
-         <string>Select All</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="clearAllChannels">
-        <property name="text">
-         <string>Clear All</string>
+         <string>Browse</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
+    <item row="5" column="0">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="7" column="3">
      <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QPushButton" name="runButton">
-        <property name="text">
-         <string>Run</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QCheckBox" name="reloadROI">
         <property name="text">
@@ -363,6 +356,29 @@
        <widget class="QSpinBox" name="stdDevs">
         <property name="maximum">
          <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListView" name="backSubChannels"/>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="runButton">
+        <property name="text">
+         <string>Run</string>
         </property>
        </widget>
       </item>
