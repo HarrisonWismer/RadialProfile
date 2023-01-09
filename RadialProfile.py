@@ -18,7 +18,7 @@ class RadialProfiler:
         - selectedChannel -> The name of the channel from which intensity values will be taken.
     """
 
-    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload, backgroundSubtract, stdDevs):
+    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload, backgroundSubtract, backgroundChannels, stdDevs):
         self.image = image
         self.scenes = scenes
         self.sceneDict = sceneDict
@@ -28,6 +28,7 @@ class RadialProfiler:
         self.unit = unit
         self.reload = reload
         self.backgroundSubtract = backgroundSubtract
+        self.backgroundChannels = backgroundChannels
         self.stdDevs = stdDevs
 
     def simplePlot(self, x, y, channels, path):
@@ -177,7 +178,7 @@ class RadialProfiler:
 
             # Do Background Subtraction on the Image if specified
             if self.backgroundSubtract:
-                for channel in self.selectedChannels:
+                for channel in self.backgroundChannels:
                     img = view.layers[channel].data[0][currZ]
                     # Fit Gaussian
                     mean,std = norm.fit(img.flatten())

@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         self.unit = None
         self.reload = False
         self.doBackgroundSubtract = False
+        self.backgroundChannels = []
         self.numStdDevs = 0
 
         # Click Events for UI
@@ -44,6 +45,7 @@ class MainWindow(QMainWindow):
 
         self.sampleList.itemSelectionChanged.connect(self.loadUpScenes)
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
+        self.backSubChannels.itemSelectionChanged.connect(self.backChannelSelection)
         self.xyScale.valueChanged.connect(self.setPixelSize)
         self.stdDevs.valueChanged.connect(self.setStdDevs)
         self.unitLabel.textChanged.connect(self.setUnit)
@@ -88,8 +90,10 @@ class MainWindow(QMainWindow):
         nChannels = self.image.data.shape[1]
         self.channels = []
         self.channelList.clear()
+        self.backSubChannels.clear()
         self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
         self.channelList.addItems(self.channels)
+        self.backSubChannels.addItems(self.channels)
 
     def browseInputFiles(self):
         """
@@ -144,6 +148,12 @@ class MainWindow(QMainWindow):
         except:
             pass
 
+    def backChannelSelection(self):
+        try:
+            self.backgroundChannels = [channel.text() for channel in self.backSubChannels.selectedItems()]
+        except:
+            pass
+
     def reloadROIs(self):
         self.reload = self.reloadROI.isChecked()
 
@@ -162,7 +172,7 @@ class MainWindow(QMainWindow):
             self.channels is not None and self.selectedChannels is not None and 
             self.sceneDict is not None and self.pixelSize is not None 
             and self.unit is not None and len(self.selectedChannels) != 0):
-            
+
             self.rp = rp.RadialProfiler(self.image, 
                                         self.scenes, 
                                         self.sceneDict, 
@@ -172,6 +182,7 @@ class MainWindow(QMainWindow):
                                         self.unit,
                                         self.reload,
                                         self.doBackgroundSubtract,
+                                        self.backgroundChannels,
                                         self.numStdDevs)
             self.rp.executeScript(Path(self.outputLine.text()))
             self.rp = None

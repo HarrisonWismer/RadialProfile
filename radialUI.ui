@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>804</width>
-    <height>599</height>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -360,7 +360,18 @@
        </widget>
       </item>
       <item>
-       <widget class="QListView" name="backSubChannels"/>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Channels To Subtract Background From:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListWidget" name="backSubChannels">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_6">
