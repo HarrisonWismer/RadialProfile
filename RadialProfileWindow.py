@@ -52,6 +52,9 @@ class MainWindow(QMainWindow):
         self.runButton.clicked.connect(self.createRadialProfile)
 
     def openFile(self, fpath):
+        """
+        Opens the file path specified by the user
+        """
 
         path = Path(fpath)
         self.image = AICSImage(path)
@@ -100,47 +103,6 @@ class MainWindow(QMainWindow):
             self.openFile(self.inputLine.text())
         except:
             self.inputLine.setText("Error Reading Image File")
-
-        '''
-        try:
-            path = Path(self.inputLine.text())
-            self.image = AICSImage(path)
-            self.sampleList.clear()
-
-            xScale = self.image.physical_pixel_sizes[2]
-            if xScale == None:
-                self.xyScale.setValue(1)
-                self.pixelSize = self.xyScale.value()
-                self.unitLabel.setText("Pixels")
-            else:
-                self.pixelSize = xScale
-                self.xyScale.setValue(self.pixelSize)
-                self.unitLabel.setText("Microns")
-
-            self.unit = self.unitLabel.text()
-
-            if path.suffix != ".lif":
-                sceneNames = [str(path.name).split(".")[0] + "_" + str(index) for index in range(len(self.image.scenes))]
-                self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
-                self.scenes = list(self.sceneDict.keys())
-                self.sampleList.addItems(list(self.sceneDict.keys()))
-
-            else:
-                self.sceneDict = {scene:scene for scene in self.image.scenes}
-                self.scenes = list(self.sceneDict.keys())
-                self.sampleList.addItems(list(self.sceneDict.keys()))
-
-
-            # Assumes each sample has the same number of channels
-            nChannels = self.image.data.shape[1]
-            self.channels = []
-            self.channelList.clear()
-            self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
-            self.channelList.addItems(self.channels)
-
-        except:
-            self.inputLine.setText("Error Reading Image File")
-        '''
 
     def browseOutputFiles(self):
         """

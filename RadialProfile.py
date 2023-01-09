@@ -179,9 +179,12 @@ class RadialProfiler:
             if self.backgroundSubtract:
                 for channel in self.selectedChannels:
                     img = view.layers[channel].data[0][currZ]
+                    # Fit Gaussian
                     mean,std = norm.fit(img.flatten())
+                    # Calculate threshold to subtract from entire image
                     backgroundThresh = mean + (std * self.stdDevs)
                     subtracted = img - backgroundThresh
+                    # Clip values to avoid underflow
                     view.layers[channel].data[0][currZ] = np.clip(subtracted, a_min = 0, a_max = None)
 
             # Create the folder within the current working directory to save all of the ROI information.
