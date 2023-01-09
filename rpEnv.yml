@@ -13,6 +13,7 @@ dependencies:
   - numpy=1.22.4
   - pip
   - tifffile
+  - scipy
 
   - pip:
     - diplib>=3.0.0

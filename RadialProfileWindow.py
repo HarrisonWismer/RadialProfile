@@ -31,6 +31,8 @@ class MainWindow(QMainWindow):
         self.pixelSize = None
         self.unit = None
         self.reload = False
+        self.doBackgroundSubtract = False
+        self.numStdDevs = 0
 
         # Click Events for UI
         self.loadBrowse.clicked.connect(self.browseInputFiles)
@@ -43,10 +45,48 @@ class MainWindow(QMainWindow):
         self.sampleList.itemSelectionChanged.connect(self.loadUpScenes)
         self.channelList.itemSelectionChanged.connect(self.channelSelection)
         self.xyScale.valueChanged.connect(self.setPixelSize)
+        self.stdDevs.valueChanged.connect(self.setStdDevs)
         self.unitLabel.textChanged.connect(self.setUnit)
         self.reloadROI.stateChanged.connect(self.reloadROIs)
+        self.backgroundSubtract.stateChanged.connect(self.doBackgroundSubtraction)
         self.runButton.clicked.connect(self.createRadialProfile)
 
+    def openFile(self, fpath):
+
+        path = Path(fpath)
+        self.image = AICSImage(path)
+        self.sampleList.clear()
+
+        xScale = self.image.physical_pixel_sizes[2]
+        if xScale == None:
+            self.xyScale.setValue(1)
+            self.pixelSize = self.xyScale.value()
+            self.unitLabel.setText("Pixels")
+        else:
+            self.pixelSize = xScale
+            self.xyScale.setValue(self.pixelSize)
+            self.unitLabel.setText("Microns")
+
+        self.unit = self.unitLabel.text()
+
+        if path.suffix != ".lif":
+            sceneNames = [str(path.name).split(".")[0] + "_" + str(index) for index in range(len(self.image.scenes))]
+            self.sceneDict = {sceneName:scene for sceneName,scene in zip(sceneNames, self.image.scenes)}
+            self.scenes = list(self.sceneDict.keys())
+            self.sampleList.addItems(list(self.sceneDict.keys()))
+
+        else:
+            self.sceneDict = {scene:scene for scene in self.image.scenes}
+            self.scenes = list(self.sceneDict.keys())
+            self.sampleList.addItems(list(self.sceneDict.keys()))
+
+
+        # Assumes each sample has the same number of channels
+        nChannels = self.image.data.shape[1]
+        self.channels = []
+        self.channelList.clear()
+        self.channels = ["Channel_" + str(num+1) for num in range(nChannels)]
+        self.channelList.addItems(self.channels)
 
     def browseInputFiles(self):
         """
@@ -56,6 +96,12 @@ class MainWindow(QMainWindow):
         file = QFileDialog.getOpenFileName(self, "Select Input File")
         self.inputLine.setText(file[0])
 
+        try:
+            self.openFile(self.inputLine.text())
+        except:
+            self.inputLine.setText("Error Reading Image File")
+
+        '''
         try:
             path = Path(self.inputLine.text())
             self.image = AICSImage(path)
@@ -94,6 +140,7 @@ class MainWindow(QMainWindow):
 
         except:
             self.inputLine.setText("Error Reading Image File")
+        '''
 
     def browseOutputFiles(self):
         """
@@ -136,7 +183,10 @@ class MainWindow(QMainWindow):
             pass
 
     def reloadROIs(self):
-        self.reload = not self.reload
+        self.reload = self.reloadROI.isChecked()
+
+    def doBackgroundSubtraction(self):
+        self.doBackgroundSubtract = self.backgroundSubtract.isChecked()
 
     def createRadialProfile(self):
         """
@@ -151,6 +201,7 @@ class MainWindow(QMainWindow):
             self.sceneDict is not None and self.pixelSize is not None 
             and self.unit is not None and len(self.selectedChannels) != 0):
 
+            print(self.doBackgroundSubtract)
             self.rp = rp.RadialProfiler(self.image, 
                                         self.scenes, 
                                         self.sceneDict, 
@@ -158,9 +209,12 @@ class MainWindow(QMainWindow):
                                         self.selectedChannels, 
                                         self.pixelSize, 
                                         self.unit,
-                                        self.reload)
+                                        self.reload,
+                                        self.doBackgroundSubtract,
+                                        self.numStdDevs)
             self.rp.executeScript(Path(self.outputLine.text()))
             self.rp = None
+            self.openFile(self.inputLine.text())
 
         else:
             pass
@@ -170,6 +224,9 @@ class MainWindow(QMainWindow):
 
     def setUnit(self):
         self.unit = self.unitLabel.text()
+
+    def setStdDevs(self):
+        self.numStdDevs = self.stdDevs.value()
 
 def main():
     app = QApplication(sys.argv)

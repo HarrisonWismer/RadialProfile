@@ -6,6 +6,7 @@ from pathlib import Path
 import tifffile
 import diplib as dip
 import pandas as pd
+from scipy.stats import norm
 
 class RadialProfiler:
     """
@@ -17,7 +18,7 @@ class RadialProfiler:
         - selectedChannel -> The name of the channel from which intensity values will be taken.
     """
 
-    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload):
+    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload, backgroundSubtract, stdDevs):
         self.image = image
         self.scenes = scenes
         self.sceneDict = sceneDict
@@ -26,6 +27,8 @@ class RadialProfiler:
         self.pixelSize = pixelSize
         self.unit = unit
         self.reload = reload
+        self.backgroundSubtract = backgroundSubtract
+        self.stdDevs = stdDevs
 
     def simplePlot(self, x, y, channels, path):
         """
@@ -124,7 +127,6 @@ class RadialProfiler:
 
                 except Exception as e:
                     print("No Previous ROIs Found")
-                    
 
             while dimMatch == False:
 
@@ -174,11 +176,20 @@ class RadialProfiler:
             # User can draw ROI's on whichever Z-Slice they want. Save the current Z-Slice.
             currZ = view.dims.current_step[1]
 
+            # Do Background Subtraction on the Image if specified
+            if self.backgroundSubtract:
+                for channel in self.selectedChannels:
+                    img = view.layers[channel].data[0][currZ]
+                    mean,std = norm.fit(img.flatten())
+                    backgroundThresh = mean + (std * self.stdDevs)
+                    subtracted = img - backgroundThresh
+                    view.layers[channel].data[0][currZ] = np.clip(subtracted, a_min = 0, a_max = None)
+
             # Create the folder within the current working directory to save all of the ROI information.
             scenePath = outputPath / sceneName
             self.checkPath(scenePath)
             with open(scenePath / Path(sceneName + "_Table.csv"), "w") as f:
-                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,Shape", file=f)
+                print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,Shape,Z", file=f)
 
             # Add ROI checks
             for index in range(len(view.layers["Centers"].data)):
@@ -218,9 +229,12 @@ class RadialProfiler:
 
                     # List of lists to hold each set of intensity values from each channel
                     yRPs = []
-                    # Create Mask for Cropping and add it as a new layer
+                    # Create Mask for Cropping and add it as a new layer\
+
+
                     for channel in self.selectedChannels:
 
+                        # maskArray = np.where(currMask==1, view.layers[channel].data , currMask.astype(int))
                         maskArray = np.where(currMask==1, view.layers[channel].data , currMask.astype(int))
                         view.add_image(maskArray, name = "ROI_" + str(index) + channel)
 
@@ -269,16 +283,21 @@ class RadialProfiler:
                     self.simplePlot(xRad, yRPs, self.selectedChannels, plotPath)
 
                     with open(scenePath / Path(sceneName + "_Table.csv"), "a") as f:
-                        print("{},{},{},{},{},{}".format("ROI_" + str(index), 
+                        print("{},{},{},{},{},{},{}".format("ROI_" + str(index), 
                                                             str(newX),
                                                             str(newY),
                                                             str(oldX),
                                                             str(oldY),
-                                                            str(roiShape)),
+                                                            str(roiShape),
+                                                            str(currZ)),
                                                             file=f)
+
+            
                 except Exception as e:
                     print()
                     print("ROI_" + str(index), "is not valid.")
                     print(e)
                     print("Skipping. . .")
                     print()
+
+            view.close()

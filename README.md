@@ -44,6 +44,7 @@ NOTE: fF re-running the plugin, currently if the same scene/sample is run again 
 4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
 5. Verify Pixel Scales & Units and set values manually if needed.
 6. If using the same output directory used in a previous run, decide if ROIs should be reloaded for scenes already run.
+7. Select Background Subtraction option if desired. This will fit a Gaussian Distribution to the pixel intensities individually for each channel. The intensity value 3 Standard Deviations above the mean will be subtracted from the image.
 7. Click Run
 
 ## Interaction:
