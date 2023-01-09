@@ -106,7 +106,6 @@ class RadialProfiler:
             # Try to reload the ROIs from the previous iteration if specified by the user.
             if self.reload:
                 try:
-                    print(str(outputPath / Path(scene) / Path(scene + "_Table.csv")))
                     rois,centers,shapes = [],[],[]
 
                     # Read in all necessary info from previous master table
