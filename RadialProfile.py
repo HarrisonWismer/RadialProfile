@@ -79,7 +79,7 @@ class RadialProfiler:
                         - RadialPlot.png -> An image of the plotted Radial Profile.
         """
 
-        outputPath = outputPath #/ Path("RadialProfiles")
+        outputPath = outputPath
         self.checkPath(outputPath)
 
         # Iterate through the selected scenes/samples
@@ -178,6 +178,10 @@ class RadialProfiler:
 
             # Do Background Subtraction on the Image if specified
             if self.backgroundSubtract:
+                with open(scenePath / Path(sceneName + "_Background.csv"), "w") as f:
+                        print("Specified Number of Standard Deviations: " + str(self.stdDevs), file=f)
+                        print("Channels Specified:", file =f)
+
                 for channel in self.backgroundChannels:
                     img = view.layers[channel].data[0][currZ]
                     # Fit Gaussian
@@ -187,6 +191,9 @@ class RadialProfiler:
                     subtracted = img - backgroundThresh
                     # Clip values to avoid underflow
                     view.layers[channel].data[0][currZ] = np.clip(subtracted, a_min = 0, a_max = None)
+
+                    with open(scenePath / Path(sceneName + "_Background.csv"), "a") as f:
+                        print("-", channel, "-Mean: ", mean, "-StdDev: ", std, "-Threshold: ", backgroundThresh, file=f)
 
             # Create the folder within the current working directory to save all of the ROI information.
             scenePath = outputPath / sceneName
@@ -294,6 +301,8 @@ class RadialProfiler:
                                                             str(roiShape),
                                                             str(currZ)),
                                                             file=f)
+
+                    
 
             
                 except Exception as e:
