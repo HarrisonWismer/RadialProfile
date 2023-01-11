@@ -260,6 +260,9 @@ class RadialProfiler:
                         oldY, oldX = int(currCenter[0]), int(currCenter[1])
                         newX, newY = int(oldX - xmin), int(oldY-ymin)
 
+                        # Ignore Zeros?
+                        #cropped = cropped.astype('float')
+                        #cropped[cropped == 0] = 'nan'
                         # Calculate the radial profile
                         rp = dip.RadialMean(cropped, binSize=1, center=(newX,newY))
 
