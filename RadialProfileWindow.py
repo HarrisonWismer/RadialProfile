@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self.pixelSize = None
         self.unit = None
         self.reload = False
+        self.maxIntensity = False
         self.doBackgroundSubtract = False
         self.backgroundChannels = []
         self.numStdDevs = 0
@@ -50,6 +51,7 @@ class MainWindow(QMainWindow):
         self.stdDevs.valueChanged.connect(self.setStdDevs)
         self.unitLabel.textChanged.connect(self.setUnit)
         self.reloadROI.stateChanged.connect(self.reloadROIs)
+        self.maxIntCheck.stateChanged.connect(self.maxIntChanged)
         self.backgroundSubtract.stateChanged.connect(self.doBackgroundSubtraction)
         self.runButton.clicked.connect(self.createRadialProfile)
 
@@ -157,6 +159,9 @@ class MainWindow(QMainWindow):
     def reloadROIs(self):
         self.reload = self.reloadROI.isChecked()
 
+    def maxIntChanged(self):
+        self.maxIntensity = self.maxIntCheck.isChecked()
+
     def doBackgroundSubtraction(self):
         self.doBackgroundSubtract = self.backgroundSubtract.isChecked()
 
@@ -181,6 +186,7 @@ class MainWindow(QMainWindow):
                                         self.pixelSize, 
                                         self.unit,
                                         self.reload,
+                                        self.maxIntensity,
                                         self.doBackgroundSubtract,
                                         self.backgroundChannels,
                                         self.numStdDevs)

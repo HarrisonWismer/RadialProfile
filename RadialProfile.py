@@ -18,7 +18,7 @@ class RadialProfiler:
         - selectedChannel -> The name of the channel from which intensity values will be taken.
     """
 
-    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload, backgroundSubtract, backgroundChannels, stdDevs):
+    def __init__(self, image, scenes, sceneDict, channels, selectedChannels, pixelSize, unit, reload, maxIntensity, backgroundSubtract, backgroundChannels, stdDevs):
         self.image = image
         self.scenes = scenes
         self.sceneDict = sceneDict
@@ -27,6 +27,7 @@ class RadialProfiler:
         self.pixelSize = pixelSize
         self.unit = unit
         self.reload = reload
+        self.maxIntensity = maxIntensity
         self.backgroundSubtract = backgroundSubtract
         self.backgroundChannels = backgroundChannels
         self.stdDevs = stdDevs
@@ -130,12 +131,18 @@ class RadialProfiler:
 
             while dimMatch == False:
 
-                # Create a viewer of the current image.
                 view = napari.Viewer(show=False)
-                view.add_image(self.image.data,
-                            channel_axis=1, 
-                            name=labels,
-                            colormap=colormaps)
+                if self.maxIntensity:
+                    maxImg = np.max(self.image.data,axis=2)
+                    view.add_image(maxImg,
+                                channel_axis=1,
+                                name=labels,
+                                colormap=colormaps)
+                else:
+                    view.add_image(self.image.data,
+                                channel_axis=1, 
+                                name=labels,
+                                colormap=colormaps)
                             
                 # Create the roiLayer (either with pre-existing or no data)
                 if roiLayer == None:
@@ -168,13 +175,19 @@ class RadialProfiler:
                     shapeTypes = None
 
             # This grabs the (Y X X) image size into variables x and y
-            y, x = view.layers[0].data.shape[2:]
+            y, x = view.layers[0].data.shape[-2:]
 
             # Creates a mask for every ROI drawn which is then used to "crop" the image.
             masks = view.layers["ROIs"].to_masks(mask_shape=(y,x))
 
             # User can draw ROI's on whichever Z-Slice they want. Save the current Z-Slice.
-            currZ = view.dims.current_step[1]
+            if self.maxIntensity:
+                currZ = None
+            else:
+                currZ = view.dims.current_step[1]
+
+            scenePath = outputPath / sceneName
+            self.checkPath(scenePath)
 
             # Do Background Subtraction on the Image if specified
             if self.backgroundSubtract:
@@ -183,7 +196,12 @@ class RadialProfiler:
                         print("Channels Specified:", file =f)
 
                 for channel in self.backgroundChannels:
-                    img = view.layers[channel].data[0][currZ]
+                    print(view.layers[channel].data.shape)
+                    if self.maxIntensity:
+                        img = view.layers[channel].data[0]
+                    else:
+                        img = view.layers[channel].data[0][currZ]
+
                     # Fit Gaussian
                     mean,std = norm.fit(img.flatten())
                     # Calculate threshold to subtract from entire image
@@ -196,8 +214,6 @@ class RadialProfiler:
                         print("-", channel, "-Mean: ", mean, "-StdDev: ", std, "-Threshold: ", backgroundThresh, file=f)
 
             # Create the folder within the current working directory to save all of the ROI information.
-            scenePath = outputPath / sceneName
-            self.checkPath(scenePath)
             with open(scenePath / Path(sceneName + "_Table.csv"), "w") as f:
                 print("ROI,RelativeCenterY,RelativeCenterX,AbsoluteCenterY,AbsoluteCenterX,Shape,Z", file=f)
 
@@ -249,7 +265,10 @@ class RadialProfiler:
                         view.add_image(maskArray, name = "ROI_" + str(index) + channel)
 
                         # Create numpy array of cropped image.
-                        cropped = view.layers["ROI_" + str(index) + channel].data[0][currZ][ymin:ymax,xmin:xmax]
+                        if self.maxIntensity:
+                            cropped = view.layers["ROI_" + str(index) + channel].data[0][ymin:ymax,xmin:xmax]
+                        else:
+                            cropped = view.layers["ROI_" + str(index) + channel].data[0][currZ][ymin:ymax,xmin:xmax]
 
                         # Save cropped ROI image
                         #roiPath = scenePath / Path("ROI_" + str(index))

@@ -333,6 +333,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="maxIntCheck">
+        <property name="text">
+         <string>Perform Max Intensity Projection</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="backgroundSubtract">
         <property name="text">
          <string>Perform Background Subtraction</string>
