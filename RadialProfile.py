@@ -196,7 +196,6 @@ class RadialProfiler:
                         print("Channels Specified:", file =f)
 
                 for channel in self.backgroundChannels:
-                    print(view.layers[channel].data.shape)
                     if self.maxIntensity:
                         img = view.layers[channel].data[0]
                     else:
