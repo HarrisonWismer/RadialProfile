@@ -73,9 +73,6 @@ The general workflow is as follows:
 
 5. View the specified output folder to see the results.
 
-- **Note:**
-	- Currently, the plugin does not know if it has already been run on a certain image. If you missed some ROIs in a certain pass of the program, if you re-run usign the same output folder, the previous results will be overwritten. It is advised to try to run all in one go, or change output folder, manually change ROI numbers, and consolidate manually if needed.
-
 ## Output:
 
 The output directory specified will contain:
@@ -90,10 +87,8 @@ Each Sample/Scene folder contains:
 	- The relative X coordinate of the radial centerpoint (Adjusted in terms of the cropped image coordinates)
 	- The absolute Y coordinate of the radial centerpoint (In terms of the original image)
 	- The absolute X coordinate of the radial centerpoint (In terms of the original image)
-	- The path to the Radial.csv file which contains the radial profile values for each specified channel for each ROI
-	- The path to the radial profile plot
-	- The path to the ROI_n_Coordinates.csv file with coordinate points to reload each ROI
 	- The type of shape for the ROI to be used when loading ROIs back in
+	- The Z-Plane of the ROI if image is a Z-Stack
 
 
 Each ROI folder contains:
@@ -104,4 +99,3 @@ Each ROI folder contains:
 
 - **Note:**
 	- Radial.csv can be read into a dataframe easily with pandas using pd.read_csv("Radial.csv"). After doing this the plots can be easily recreated by calling .plot() on the dataframe.
-	- The master scene tables can be read in with pandas using pd.read_csv(path)
