@@ -42,9 +42,9 @@ NOTE: fF re-running the plugin, currently if the same scene/sample is run again 
 2. Specify an output directory. If re-running the same samples in the same output directory, you may choose to reload previously used ROIs.
 3. Use the mouse to select which samples will be run through the program.
 4. Use the mouse to select which channel intenstity values will be taken from in the analysis.
-5. Verify Pixel Scales & Units and set values manually if needed.
-6. If using the same output directory used in a previous run, decide if ROIs should be reloaded for scenes already run.
-7. Select Background Subtraction option, and choose channels to be subtracted from, if desired. This will fit a Gaussian Distribution to the pixel intensities individually for each channel. The intensity value at the specified number of  Standard Deviations above the mean will be subtracted from the image.
+5. Select Background Subtraction option, and choose channels to be subtracted from, if desired. This will fit a Gaussian Distribution to the pixel intensities individually for each channel. The intensity value at the specified number of  Standard Deviations above the mean will be subtracted from the image.
+6. Verify Pixel Scales & Units and set values manually if needed.
+7. If using the same output directory used in a previous run, decide if ROIs should be reloaded for scenes already run.
 8. Select Maximum Intensity Projection option if desired. If image is a Z-Stack, this will perform a MIP across all Z-Places, resulting in a single image.
 9. Click Run
 
