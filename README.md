@@ -36,7 +36,7 @@ Ex: >$ python RunRadialProfile.py
 
 This will bring up the GUI through which all necessary interaction with the program can be done Once in the GUI complete each step in the orders shown.
 
-NOTE: fF re-running the plugin, currently if the same scene/sample is run again and the same output directory specified, contents will be OVERWRITTEN. However, if using the same output directory and running the plugin on a new scene/sample, a new folder for that sample will be created.
+NOTE: If re-running the plugin, currently if the same scene/sample is run again and the same output directory specified, contents will be OVERWRITTEN. However, if using the same output directory and running the plugin on a new scene/sample, a new folder for that sample will be created.
 
 1. Specify an input file.
 2. Specify an output directory. If re-running the same samples in the same output directory, you may choose to reload previously used ROIs.
@@ -53,7 +53,7 @@ Upon successfully running the program through the GUI, a Napari Viewer with the 
 
 The general workflow is as follows:
 
-1. Navigate to the desired Z-Plane
+1. Navigate to the desired Z-Plane (Unless doing a maximum intensity projection)
 
 2. Use any channel as a guide to:
 
