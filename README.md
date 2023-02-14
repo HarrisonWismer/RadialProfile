@@ -47,7 +47,7 @@ NOTE: If re-running the plugin, currently if the same scene/sample is run again 
 5. Select Background Subtraction option, and choose channels to be subtracted from, if desired. This will fit a Gaussian Distribution to the pixel intensities individually for each channel. The intensity value at the specified number of  Standard Deviations above the mean will be subtracted from the image.
 6. Verify Pixel Scales & Units and set values manually if needed.
 7. If using the same output directory used in a previous run, decide if ROIs should be reloaded for scenes already run.
-8. Select Maximum Intensity Projection option if desired. If image is a Z-Stack, this will perform a MIP across all Z-Places, resulting in a single image.
+8. Select Maximum Intensity Projection (MIP) option if desired. If image is a Z-Stack, this will perform a MIP across all Z-Places, resulting in a single image.
 9. Click Run
 
 ## Interaction:
@@ -64,7 +64,7 @@ The general workflow is as follows:
 	B) Place a Center Point using the points layer named "Centers" which can be found on the left. Place this where you want the center of the Radial Profile circle to be.
 	   Note that this center point does not need to be placed in the center of the ROI defined.
 
-	**IMPORTANT: ROI's and Center Points must be created in the same order to be properly associated with each other. It is recommend to draw 1 ROI and then 
+	**IMPORTANT: ROI's and Center Points must be created in the same order to be properly associated with each other. It is recommended to draw 1 ROI and then 
 	immediately place its center point or vice versa. A less feasible but still valid approach would be to draw all ROIs and then place all center points in the SAME ORDER the ROIs were added. 
 	What CANNOT be done is to create ROI_1, create ROI_2, place ROI_2's center point and then place ROI_1's center point. This will associate ROI_2 with ROI_1's 
 	center point and vice versa.**
