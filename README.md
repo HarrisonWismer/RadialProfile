@@ -9,6 +9,8 @@ This script in particular, aims to make performing this type of radial profile a
 
 This plugin was inspired by the ImageJ [Radial Profile Plugin](https://imagej.nih.gov/ij/plugins/radial-profile.html) and [Radial Profile Extended Plugin](https://imagej.nih.gov/ij/plugins/radial-profile-ext.html). This plugin aims to perform the same kind of analysis as these plugins while also being easier to use when profiling multiple/many regions of interest and doing automatic masking.
 
+The Radial Profile calculation is carried out using the [Diplib PyDip release](https://diplib.org/), specifically the Radial Mean function in which pixel intensities within each concentric ring are summed, and divided by the total number of pixels in that ring.
+
 ## Dependencies:
 There is a provided Conda Environment file camed rpEnv.yml that can be used to create a Conda environment with all dependencies already installed.
 
