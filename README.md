@@ -11,6 +11,12 @@ This plugin was inspired by the ImageJ [Radial Profile Plugin](https://imagej.ni
 
 The Radial Profile calculation is carried out using the [Diplib PyDip release](https://diplib.org/), specifically the Radial Mean function in which pixel intensities within each concentric ring are summed, and divided by the total number of pixels in that ring.
 
+## Methods
+
+Napari was used as an interactive image viewer from which the user could manually create all ROI's.
+
+For each ROI created by the user, the smallest possible bounding box containing the ROI is fit and any regions within the bounding box but not within the ROI are masked. Then, using the center point of the ROI, the DipLib Radial Mean Function is called on the image containing solely the ROI within the bounding box. The decription of the function can be found [here](https://diplib.org/diplib-docs/math_projection.html#dip-RadialMean-dip-Image-CL-dip-Image-CL-dip-Image-L-dip-dfloat--dip-String-CL-dip-FloatArray-CL). Essentially, for each concentric ring of pixels around the radius, the intensity values in that ring are summed, and then divided by the total number of pixels in that ring. The default parameters were kept the same within the Radial Mean function (binSize=1,maxRadius='OuterRadius'). The data from each ROI/Image were saved as described in the "Output" section below.
+
 ## Dependencies:
 There is a provided Conda Environment file camed rpEnv.yml that can be used to create a Conda environment with all dependencies already installed.
 
