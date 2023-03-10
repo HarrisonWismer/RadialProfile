@@ -209,8 +209,20 @@ class RadialProfiler:
                     # Clip values to avoid underflow
                     view.layers[channel].data[0][currZ] = np.clip(subtracted, a_min = 0, a_max = None)
 
+
                     with open(scenePath / Path(sceneName + "_Background.csv"), "a") as f:
                         print("-", channel, "-Mean: ", mean, "-StdDev: ", std, "-Threshold: ", backgroundThresh, file=f)
+
+                subtracted_image = np.empty(shape=(len(self.channels), y, x))
+                for channel_ind, channel in enumerate(self.channels):
+                    if self.maxIntensity:
+                        subtracted_image[channel_ind] = view.layers[channel].data[0]
+                    else:
+                        subtracted_image[channel_ind] = view.layers[channel].data[0][currZ]
+
+                tifffile.imwrite(scenePath / Path("./BackgroundSubtractedImage.tif"), subtracted_image)
+
+
 
             # Create the folder within the current working directory to save all of the ROI information.
             with open(scenePath / Path(sceneName + "_Table.csv"), "w") as f:
