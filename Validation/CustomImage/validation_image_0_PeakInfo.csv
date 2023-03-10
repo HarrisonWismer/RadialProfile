@@ -1,0 +1,4 @@
+ROI,Channel_1 Number of Peaks,Channel_1 Average Peak Position (Absolute) [Pixels],Channel_1 Average Peak Position (Relative to Channel_1) [Pixels],Channel_1 Average Peak Amplitude,Channel_2 Number of Peaks,Channel_2 Average Peak Position (Absolute) [Pixels],Channel_2 Average Peak Position (Relative to Channel_1) [Pixels],Channel_2 Average Peak Amplitude
+ROI_0,1,24.0,-26.0,254.73684210526315,1,74.0,24.0,163.07974137931035
+ROI_1,1,36.0,-39.0,253.82327586206893,2,88.5,13.5,192.67797771282426
+ROI_2,1,24.0,-26.0,254.73684210526315,1,74.0,24.0,163.42241379310346

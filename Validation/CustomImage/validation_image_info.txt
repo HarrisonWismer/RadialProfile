@@ -1,0 +1,27 @@
+To test the Radial Profile Plugin and the Peak Calling procedure, a validation image was generated using the CV2 Package in Python.
+
+The image contains 3 circles, and is split into two separate channels.
+
+Circle 1:
+Center Point: 100,100
+Channel 1 Outer Radius = 50
+Channel 2 Outer Radius = 90
+
+Circle 2:
+Center Point: 250,250
+Channel 1 Outer Radius = 75
+Channel 2 Outer Radius = 115
+
+Circle 3:
+Center Point: 400,400
+Channel 1 Outer Radius = 75
+Channel 2 Outer Radius = 90
+
+
+
+Channel 1: Intensity increased in concentric rings from the center point until a radius of 25, where the intensity peaks and then linearly decreases until
+reaching an intensity of 0 at the outer radius of channel 1.
+
+
+Channel 2: A 5 pixel wide ring with maximum intensity starts at the outer radius of channel 1. Then a the intensity linearly increases until maxing
+at the outer radius of channel 2.
